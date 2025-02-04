@@ -2,7 +2,8 @@ import { IonButton, IonCard, IonContent, IonHeader, IonPage, IonTitle, IonToolba
 import ExploreContainer from '../components/ExploreContainer';
 import './Home.css';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import PushNotificationService from '../services/PushNotificationService';
 
 const Home: React.FC = () => {
 
@@ -18,6 +19,10 @@ const Home: React.FC = () => {
 
 		setProfil(image.dataUrl)
 	};
+
+	useEffect(() => {
+		PushNotificationService.initialize();
+	}, []);
 
 
 	return (

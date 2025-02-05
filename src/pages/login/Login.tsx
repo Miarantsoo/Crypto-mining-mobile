@@ -3,31 +3,26 @@ import {
 	IonContent,
 	IonInput,
 	IonButton,
-	IonText
+	IonText,
+	IonToast
 } from '@ionic/react';
 import { FaArrowRight } from "react-icons/fa6";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Bg from "../../assets/bg.jpg";
 import './Login.css';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { firestore } from '../../firebase';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { SHA256 } from 'crypto-js'
+import storage from '../../storage';
+import Loading from '../../components/loading/Loading';
+import { useNavigate } from 'react-router';
 
 type FormFields = {
 	email: string;
 	mdp: string;
 };
 
-interface IUtilisateur {
-	id: number;
-	nom: string;
-	prenom: string;
-	genre: number;
-	mail: string;
-	motDePasse: string;
-	dateNaissance: string;
-	photoProfile: string;
-}
 
 const Login = () => {
 	const {
@@ -36,37 +31,54 @@ const Login = () => {
 		formState: { errors, isSubmitting }
 	} = useForm<FormFields>()
 
+	const [showToast, setShowToast] = useState<boolean>(false);
+	const [messageToast, setMessageToast] = useState<string>('');
+
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		console.log("ahzuihf");
+	})
+
 	const onSubmit: SubmitHandler<FormFields> = async (data) => {
 		console.log(data);
 		try {
 			const usersRef = collection(firestore, "utilisateur")
 			console.log(usersRef);
-			const q = query(usersRef, where('email', "==", data.email))
-			const querySnapshot = await getDocs(q)
+
+			const allDocsSnapshot = await getDocs(usersRef);
+			console.log("All documents count:", allDocsSnapshot);
+			const q = query(usersRef, where('mail', "==", data.email));
+			const querySnapshot = await getDocs(q);
+
+			console.log("Query snapshot size:", querySnapshot.size);
 
 			if (querySnapshot.empty) {
-				alert("Tsy miexiste le mail e")
+				setShowToast(true);
+				setMessageToast("L'email que vous avez inscrit n'existe pas. Veuillez réessayer")
 				return;
 			}
 
 			let utilisateur = null;
 
 			querySnapshot.forEach((doc) => {
-				utilisateur = { id: doc.id, ...doc.data }
+				const data = doc.data()
+				utilisateur = { id: Number(doc.id), ...data }
 			})
 
-
 			// @ts-ignore
-			if (utilisateur?.motDePasse === data.mdp) {
+			if (utilisateur?.motDePasse === SHA256(data.mdp).toString()) {
 				console.log(utilisateur);
-				alert("TAFACO")
+				await localStorage.setItem('utilisateur', JSON.stringify(utilisateur));
+				navigate("/home")
 			} else {
-				alert("Diso mdp e")
+				setShowToast(true);
+				setMessageToast("Votre mot de passe est erroné. Veuillez réessayer")
 			}
 
 		} catch (error) {
-			console.log("ERREUR LOGIN E " + error);
-			alert("ERREUR TAM LOGIN E")
+			setShowToast(true);
+			setMessageToast("Une erreur s'est produite: "+error)
 		}
 	};
 
@@ -142,6 +154,24 @@ const Login = () => {
 						</div>
 					</div>
 				</div>
+				{isSubmitting &&
+					<Loading />
+				}
+				<IonToast
+					isOpen={showToast}
+					onDidDismiss={() => setShowToast(false)}
+					message={messageToast}
+					style={{
+						'--background': '#F32013', 
+						'--color': 'white',       
+						'--height': '65px',
+						fontSize: '15px',
+						'--border-radius': '16px',   
+						'--box-shadow': '0 4px 8px rgba(0,0,0,0.2)'
+					  }}
+					duration={3000} 
+					position="bottom"
+				/>
 			</IonContent>
 		</IonPage>
 	);

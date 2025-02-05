@@ -2,11 +2,24 @@ import { IonButton, IonCard, IonContent, IonHeader, IonPage, IonTitle, IonToolba
 import ExploreContainer from '../components/ExploreContainer';
 import './Home.css';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+interface IUtilisateur {
+	id: number;
+	nom: string;
+	prenom: string;
+	genre: number;
+	mail: string;
+	motDePasse: string;
+	dateNaissance: string;
+	photoProfile: string;
+}
 
 const Home: React.FC = () => {
 
 	const [profil, setProfil] = useState<any>();
+	const [user, setUser] = useState<IUtilisateur>();
+	const [verif, setVerif] = useState<string | undefined>("")
 
 	const takePicture = async () => {
 		const image = await Camera.getPhoto({
@@ -17,7 +30,13 @@ const Home: React.FC = () => {
 		});
 
 		setProfil(image.dataUrl)
+		setVerif(image.path)
 	};
+
+	useEffect(() => {
+		const userLS = JSON.parse(localStorage.getItem("utilisateur") || '{}');
+		setUser(userLS);
+	}, [])
 
 
 	return (
@@ -38,8 +57,13 @@ const Home: React.FC = () => {
 					{profil && 
 						<img src={profil} alt="profil pic" />
 					}
+
+					{profil && 
+						<p>{verif} ZOZOZI</p>
+					}
 				</IonCard>
 				<IonButton onClick={takePicture}>START CAMERA</IonButton>
+				<p>{user?.mail}</p>
 			</IonContent>
 		</IonPage>
 	);

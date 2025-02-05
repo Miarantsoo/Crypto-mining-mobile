@@ -3,6 +3,10 @@ import ExploreContainer from '../components/ExploreContainer';
 import './Home.css';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { useEffect, useState } from 'react';
+import { Cloudinary } from '@cloudinary/url-gen';
+import { auto } from '@cloudinary/url-gen/actions/resize';
+import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
+import { AdvancedImage } from '@cloudinary/react';
 
 interface IUtilisateur {
 	id: number;
@@ -16,6 +20,8 @@ interface IUtilisateur {
 }
 
 const Home: React.FC = () => {
+
+	const cld = new Cloudinary({ cloud: { cloudName: 'djaekualm' } });
 
 	const [profil, setProfil] = useState<any>();
 	const [user, setUser] = useState<IUtilisateur>();
@@ -31,6 +37,21 @@ const Home: React.FC = () => {
 
 		setProfil(image.dataUrl)
 		setVerif(image.path)
+
+		const uniqueImageName = `image_${Date.now()}`;
+
+		// Now, upload the image to Cloudinary using the unique name as public_id
+		try {
+		  const uploadResult = await cld.uploader.upload(
+			image.dataUrl, // Using the data URL from the camera capture
+			{
+			  public_id: uniqueImageName,
+			}
+		  );
+		  console.log('Upload successful:', uploadResult);
+		} catch (error) {
+		  console.log(error)
+		}
 	};
 
 	useEffect(() => {

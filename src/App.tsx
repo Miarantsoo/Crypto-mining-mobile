@@ -33,6 +33,9 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 import Login from "./pages/login/Login";
+import PorteFeuille from "./pages/portefeuille/PorteFeuille";
+import Historique from "./pages/historique/Historique";
+import Solde from "./pages/solde/Solde";
 setupIonicReact();
 
 const App: React.FC = () => {
@@ -48,6 +51,15 @@ const App: React.FC = () => {
 					</Route>
 					<Route exact path="/login">
 						<Login />
+					</Route>
+					<Route exact path="/portefeuille">
+						<PorteFeuille />
+					</Route>
+					<Route exact path="/historique">
+						<Historique />
+					</Route>
+					<Route exact path="/solde">
+						<Solde />
 					</Route>
 				</IonRouterOutlet>
 			</IonReactRouter>

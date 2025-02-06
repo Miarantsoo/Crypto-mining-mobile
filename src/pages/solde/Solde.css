@@ -1,0 +1,96 @@
+.demande-background {
+    width: 100%;
+    min-height: 100vh;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.demande-container {
+    background-color: #f8f9fa;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 1rem;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.demande-form-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.demande-title {
+    font-family: 'YourTitleFont', sans-serif;
+    font-size: 2rem;
+    text-transform: uppercase;
+    color: #333;
+    text-align: start;
+    margin-bottom: 10px;
+}
+
+.demande-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-wrapper {
+    width: 100%;
+}
+
+.demande-button-depot {
+    margin-top: 10px;
+    height: 40px;
+    width: 100%;
+}
+
+.demande-button-retrait {
+    margin-top: 10px;
+    height: 40px;
+    width: 100%;
+}
+
+.demande-button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: white;
+}
+
+.demande-button-icon {
+    color: white;
+}
+
+.demande-buttons {
+    margin-top: 1rem;
+}
+
+.demande-header {
+    width: 100%;
+    margin-bottom: 20px;
+    text-align: start;
+}
+
+.demande-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.demande-description {
+    color: #666;
+    font-size: 0.9rem;
+}

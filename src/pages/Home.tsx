@@ -19,62 +19,61 @@ export interface IUtilisateur {
 }
 
 const Home: React.FC = () => {
-  const [profil, setProfil] = useState<any>();
-  const [user, setUser] = useState<IUtilisateur>();
-  const [verif, setVerif] = useState<string | undefined>("");
 
-  const takePicture = async () => {
-    const image = await Camera.getPhoto({
-      quality: 90,
-      allowEditing: false,
-      resultType: CameraResultType.DataUrl,
-      source: CameraSource.Prompt,
-    });
+	const [profil, setProfil] = useState<any>();
+	const [user, setUser] = useState<IUtilisateur>();
+	const [verif, setVerif] = useState<string | undefined>("")
 
-    setProfil(image.dataUrl);
-    setVerif(image.path);
+	const takePicture = async () => {
+		const image = await Camera.getPhoto({
+			quality: 90,
+			allowEditing: false,
+			resultType: CameraResultType.DataUrl,
+			source: CameraSource.Prompt
+		});
 
-    const uniqueName = `${user?.nom}-${user?.prenom}_${Date.now()}`;
+		setProfil(image.dataUrl)
+		setVerif(image.path)
 
-    try {
-      const cloudinaryUrl = "https://api.cloudinary.com/v1_1/djaekualm/upload";
-      const formData = new FormData();
-      if (image.dataUrl) {
-        formData.append("file", image.dataUrl);
-      } else {
-        throw new Error("Image data URL is undefined");
-      }
-      formData.append("public_id", uniqueName);
-      formData.append("upload_preset", "ml_default");
+		const uniqueName = `${user?.nom}-${user?.prenom}_${Date.now()}`;
 
-      const response = await fetch(cloudinaryUrl, {
-        method: "POST",
-        body: formData,
-      });
-      const data = await response.json();
-      console.log("Uploaded image URL:", data.secure_url);
+		try {
+			const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/djaekualm/upload';
+			const formData = new FormData();
+			if (image.dataUrl) {
+				formData.append('file', image.dataUrl);
+			} else {
+				throw new Error('Image data URL is undefined');
+			}
+			formData.append('public_id', uniqueName);
+			formData.append('upload_preset', 'ml_default');
 
-      if (user?.id !== undefined) {
-        const utilisateurDoc = doc(
-          firestore,
-          "utilisateur",
-          user.id.toString()
-        );
-        await updateDoc(utilisateurDoc, {
-          photoProfile: uniqueName,
-        });
-      } else {
-        throw new Error("User ID is undefined");
-      }
-    } catch (error) {
-      console.error("Error taking or uploading picture:", error);
-    }
-  };
+			const response = await fetch(cloudinaryUrl, {
+				method: 'POST',
+				body: formData
+			});
+			const data = await response.json();
+			console.log('Uploaded image URL:', data.secure_url);
 
-  useEffect(() => {
-    const userLS = JSON.parse(localStorage.getItem("utilisateur") || "{}");
-    setUser(userLS);
-  }, []);
+			if (user?.id !== undefined) {
+				const utilisateurDoc = doc(firestore, "utilisateur", user.id.toString());
+				await updateDoc(utilisateurDoc, {
+					photoProfile: uniqueName
+				})
+			} else {
+				throw new Error('User ID is undefined');
+			}
+
+		} catch (error) {
+			console.error('Error taking or uploading picture:', error);
+		}
+	};
+
+	useEffect(() => {
+		const userLS = JSON.parse(localStorage.getItem("utilisateur") || '{}');
+		setUser(userLS);
+	}, [])
+
 
 	return (
 		<IonPage>
@@ -100,7 +99,6 @@ const Home: React.FC = () => {
 					}
 				</IonCard>
 				<IonButton onClick={takePicture}>START CAMERA</IonButton>
-				<IonButton>GO TO profile <Link to={"/profil"}>ELLEKRA</Link></IonButton>
 				<p>{user?.mail}</p>
 			</IonContent>
 		</IonPage>

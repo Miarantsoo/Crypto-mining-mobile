@@ -19,7 +19,7 @@ const Loading: React.FC<LoadingProps> = ({ text = "Chargement..." }) => {
           aria-label="loading"
           data-testid="loader"
         />
-        <p className="loading-text font-body">{text}</p>
+        <p className="loading-text">{text}</p>
       </div>
     </div>
   );

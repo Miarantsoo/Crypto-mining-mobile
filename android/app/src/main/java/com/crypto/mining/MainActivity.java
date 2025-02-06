@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package com.crypto.mining;
 
 import com.getcapacitor.BridgeActivity;
 

@@ -14,7 +14,6 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { firestore } from '../../firebase';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { SHA256 } from 'crypto-js'
-import storage from '../../storage';
 import Loading from '../../components/loading/Loading';
 import { useNavigate } from 'react-router';
 
@@ -65,7 +64,7 @@ const Login = () => {
 			if (utilisateur?.motDePasse === SHA256(data.mdp).toString()) {
 				console.log(utilisateur);
 				await localStorage.setItem('utilisateur', JSON.stringify(utilisateur));
-				navigate("/home")
+				navigate("/profil")
 			} else {
 				setShowToast(true);
 				setMessageToast("Votre mot de passe est erroné. Veuillez réessayer")

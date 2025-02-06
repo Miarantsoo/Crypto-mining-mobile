@@ -4,7 +4,6 @@ import {
   LocalNotifications,
 } from "@capacitor/local-notifications";
 import { PushNotifications, Token } from "@capacitor/push-notifications";
-import { NotificationData } from "../pages/Home";
 
 // Track notification state
 let lastNotification: any = null;
@@ -54,17 +53,17 @@ const PushNotificationService = {
     );
 
     // Method called when tapping on a notification
-    PushNotifications.addListener(
-      "pushNotificationActionPerformed",
-      (notification: ActionPerformed) => {
-        // let data: NotificationData = notification.notification.data;
-      }
-    );
+    // PushNotifications.addListener(
+    //   "pushNotificationActionPerformed",
+    //   (notification: ActionPerformed) => {
+    //     // let data: NotificationData = notification.notification.data;
+    //   }
+    // );
 
     LocalNotifications.addListener(
       "localNotificationActionPerformed",
       (notification) => {
-        let data: NotificationData = notification.notification.extra;
+        // let data: NotificationData = notification.notification.extra;
       }
     );
   },

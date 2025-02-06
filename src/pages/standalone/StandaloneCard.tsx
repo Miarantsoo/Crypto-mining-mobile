@@ -3,9 +3,9 @@ import {
   IonContent,
 } from "@ionic/react";
 import Bg from "../../assets/bg.jpg";
-import "./Login.css";
+import { Outlet } from "react-router";
 
-const Login = () => {
+const StandaloneCard = () => {
   return (
     <IonPage>
       <IonContent fullscreen>
@@ -13,11 +13,13 @@ const Login = () => {
           className="flex items-center justify-center w-full h-full p-5"
           style={{ backgroundImage: `url(${Bg})` }}
         >
-          <div className="bg-light shadow-2xl rounded-lg"></div>
+          <div className="bg-light shadow-2xl rounded-lg">
+            <Outlet></Outlet>
+          </div>
         </div>
       </IonContent>
     </IonPage>
   );
 };
 
-export default Login;
+export default StandaloneCard;

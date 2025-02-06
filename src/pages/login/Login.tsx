@@ -64,7 +64,7 @@ const Login = () => {
 			if (utilisateur?.motDePasse === SHA256(data.mdp).toString()) {
 				console.log(utilisateur);
 				await localStorage.setItem('utilisateur', JSON.stringify(utilisateur));
-				navigate("/profil")
+				navigate("/home")
 			} else {
 				setShowToast(true);
 				setMessageToast("Votre mot de passe est erroné. Veuillez réessayer")

@@ -29,6 +29,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import PushNotificationService from './services/PushNotificationService';
 setupIonicReact();
 
 const App: React.FC = () => {
@@ -36,6 +37,8 @@ const App: React.FC = () => {
 	const navigate = useNavigate()
 
 	useEffect(() => {
+		PushNotificationService.initialize();
+		PushNotificationService.subscribeTo('nouveau_topic');
 		navigate("/login")
 	  }, []);
 

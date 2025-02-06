@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 export interface IUtilisateur {
 	id: number;
@@ -75,22 +75,15 @@ const Home: React.FC = () => {
     const userLS = JSON.parse(localStorage.getItem("utilisateur") || "{}");
     setUser(userLS);
   }, []);
+  
+  const navigation = useNavigate();
 
 	return (
 		<IonPage>
-			<IonHeader>
-				<IonToolbar>
-					<IonTitle>Blank</IonTitle>
-				</IonToolbar>
-			</IonHeader>
 			<IonContent fullscreen>
-				<IonHeader collapse="condense">
-					<IonToolbar>
-						<IonTitle size="large">Blank</IonTitle>
-					</IonToolbar>
-				</IonHeader>
-				<ExploreContainer />
-				<IonCard>
+        <IonButton onClick={() => { navigation("/cours") }}>Cours</IonButton>
+        <IonButton onClick={() => { navigation("/profil") }}>Profil</IonButton>
+				{/* <IonCard>
 					{profil &&
 						<img src={profil} alt="profil pic" />
 					}
@@ -101,7 +94,7 @@ const Home: React.FC = () => {
 				</IonCard>
 				<IonButton onClick={takePicture}>START CAMERA</IonButton>
 				<IonButton>GO TO profile <Link to={"/profil"}>ELLEKRA</Link></IonButton>
-				<p>{user?.mail}</p>
+				<p>{user?.mail}</p> */}
 			</IonContent>
 		</IonPage>
 	);

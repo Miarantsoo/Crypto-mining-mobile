@@ -2,35 +2,37 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LineChart } from "@mui/x-charts";
 import { IonPage, IonContent } from "@ionic/react";
-import Bg from "../../assets/bg.jpg";
 import { HiMiniChevronLeft } from "react-icons/hi2";
 import { useNavigate } from "react-router";
+import { collection, getDocs } from "firebase/firestore";
+import { db, firestore } from "../../firebase";
+import Loading from "../../components/loading/Loading";
+import { limitToLast, onValue, orderByKey, query, ref } from "firebase/database";
 
 type HistoCrypto = {
-  daty: string;
+  id: number;
+  daty: { epochSecond: number };
   valeur: number;
+  idCrypto: {
+    id: number;
+    nom: string;
+    daty: { epochSecond: number };
+  };
 };
 
 type Crypto = {
   id: number;
   nom: string;
-  historique: HistoCrypto[];
+  daty: Date;
 };
 
-const staticCryptos: Crypto[] = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1,
-  nom: `Crypto ${i + 1}`,
-  historique: Array.from({ length: 10 }, (_, j) => ({
-    daty: new Date(Date.now() - j * 60000).toISOString(),
-    valeur: Math.random() * 100 + 1,
-  })).reverse(),
-}));
-
 const Cours = () => {
-  const [allCryptos] = useState<Crypto[]>(staticCryptos);
+  const [load, setLoad] = useState<boolean>(true)
+  const [allCryptos, setAllCryptos] = useState<Crypto[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [cryptoHistory, setCryptoHistory] = useState<HistoCrypto[]>([]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -46,10 +48,50 @@ const Cours = () => {
     return () => observer.disconnect();
   }, []);
 
-  const chartData = allCryptos[selectedIndex].historique.map((histo) => ({
-    x: new Date(histo.daty),
-    y: histo.valeur,
-  }));
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(firestore, "crypto"));
+        const newData = querySnapshot.docs.map((doc) => ({
+          id: Number(doc.id)-1,
+          ...doc.data()
+        } as unknown as Crypto));
+        setAllCryptos(newData);
+
+        setLoad(false);
+      } catch (err) {
+        setLoad(false);
+        console.error("Error fetching data:", err);
+      }
+    };
+
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    const histoRef = query(ref(db, "histo-crypto"), orderByKey(), limitToLast(50));
+
+    const unsubscribe = onValue(histoRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        console.log(allCryptos);
+
+        const formattedData: HistoCrypto[] = Object.values(data)
+        .filter((entry: any) => {
+          return entry.idCrypto.id-1 === selectedIndex;
+        })
+        .sort((a: any, b: any) => b.daty.epochSecond - a.daty.epochSecond) 
+        .slice(0, 10) as HistoCrypto[]; 
+
+        console.log(formattedData);
+        setCryptoHistory(formattedData);
+      } else {
+        setCryptoHistory([]);
+      } 
+    });
+
+    return () => unsubscribe();
+  }, [selectedIndex]);
 
   const navigation = useNavigate();
 
@@ -76,10 +118,15 @@ const Cours = () => {
               key={selectedIndex}
               width={dimensions.width}
               height={dimensions.height}
-              series={[{ data: chartData.map((d) => d.y), curve: "linear" }]}
+              series={[
+                {
+                  data: cryptoHistory.map((entry) => entry.valeur),
+                  curve: "linear",
+                },
+              ]}
               xAxis={[
                 {
-                  data: chartData.map((d) => d.x),
+                  data: cryptoHistory.map((entry) => new Date(entry.daty.epochSecond * 1000)),
                   scaleType: "time",
                   valueFormatter: (date: Date) =>
                     date.toLocaleTimeString("fr-FR", {
@@ -112,9 +159,8 @@ const Cours = () => {
                     }}
                     exit={{ opacity: 0, x: -50 }}
                     transition={{ type: "spring", stiffness: 120 }}
-                    className={`absolute text-sm font-bold cursor-pointer font-title uppercase ${
-                      position === 0 ? "text-main" : "text-slate-500"
-                    }`}
+                    className={`absolute text-sm font-bold cursor-pointer font-title uppercase ${position === 0 ? "text-main" : "text-slate-500"
+                      }`}
                     onClick={() => setSelectedIndex(index)}
                   >
                     {crypto.nom}
@@ -124,6 +170,9 @@ const Cours = () => {
             </AnimatePresence>
           </div>
         </div>
+        {load &&
+          <Loading />
+        }
       </IonContent>
     </IonPage>
   );

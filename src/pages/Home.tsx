@@ -3,10 +3,8 @@ import ExploreContainer from '../components/ExploreContainer';
 import './Home.css';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { useEffect, useState } from 'react';
-import { Cloudinary } from '@cloudinary/url-gen';
-import { auto } from '@cloudinary/url-gen/actions/resize';
-import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
-import { AdvancedImage } from '@cloudinary/react';
+import { doc, updateDoc } from 'firebase/firestore';
+import { firestore } from '../firebase';
 
 interface IUtilisateur {
 	id: number;
@@ -20,8 +18,6 @@ interface IUtilisateur {
 }
 
 const Home: React.FC = () => {
-
-	const cld = new Cloudinary({ cloud: { cloudName: 'djaekualm' } });
 
 	const [profil, setProfil] = useState<any>();
 	const [user, setUser] = useState<IUtilisateur>();
@@ -38,19 +34,37 @@ const Home: React.FC = () => {
 		setProfil(image.dataUrl)
 		setVerif(image.path)
 
-		const uniqueImageName = `image_${Date.now()}`;
+		const uniqueName = `${user?.nom}-${user?.prenom}_${Date.now()}`;
 
-		// Now, upload the image to Cloudinary using the unique name as public_id
 		try {
-		  const uploadResult = await cld.uploader.upload(
-			image.dataUrl, // Using the data URL from the camera capture
-			{
-			  public_id: uniqueImageName,
+			const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/djaekualm/upload';
+			const formData = new FormData();
+			if (image.dataUrl) {
+				formData.append('file', image.dataUrl);
+			} else {
+				throw new Error('Image data URL is undefined');
 			}
-		  );
-		  console.log('Upload successful:', uploadResult);
+			formData.append('public_id', uniqueName);
+			formData.append('upload_preset', 'ml_default');
+
+			const response = await fetch(cloudinaryUrl, {
+				method: 'POST',
+				body: formData
+			});
+			const data = await response.json();
+			console.log('Uploaded image URL:', data.secure_url);
+
+			if (user?.id !== undefined) {
+				const utilisateurDoc = doc(firestore, "utilisateur", user.id.toString());
+				await updateDoc(utilisateurDoc, {
+					photoProfile: uniqueName
+				})
+			} else {
+				throw new Error('User ID is undefined');
+			}
+
 		} catch (error) {
-		  console.log(error)
+			console.error('Error taking or uploading picture:', error);
 		}
 	};
 
@@ -75,11 +89,11 @@ const Home: React.FC = () => {
 				</IonHeader>
 				<ExploreContainer />
 				<IonCard>
-					{profil && 
+					{profil &&
 						<img src={profil} alt="profil pic" />
 					}
 
-					{profil && 
+					{profil &&
 						<p>{verif} ZOZOZI</p>
 					}
 				</IonCard>

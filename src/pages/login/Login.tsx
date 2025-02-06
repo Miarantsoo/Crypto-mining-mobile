@@ -36,15 +36,10 @@ const Login = () => {
 
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		console.log("ahzuihf");
-	})
-
 	const onSubmit: SubmitHandler<FormFields> = async (data) => {
 		console.log(data);
 		try {
 			const usersRef = collection(firestore, "utilisateur")
-			console.log(usersRef);
 
 			const allDocsSnapshot = await getDocs(usersRef);
 			console.log("All documents count:", allDocsSnapshot);
@@ -89,7 +84,7 @@ const Login = () => {
 					className="login-background"
 					style={{ backgroundImage: `url(${Bg})` }}
 				>
-					<div className="login-container">
+					<div className="login-container bg-light shadow-2xl">
 						<div className="login-form-wrapper">
 							<span className="login-title">
 								Connectez-vous avec Connectify

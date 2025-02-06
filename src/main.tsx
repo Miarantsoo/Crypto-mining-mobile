@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { browserRouter } from './route/Route';
 import { RouterProvider } from 'react-router-dom';
+import './index.css'
 
 const router = browserRouter;
 

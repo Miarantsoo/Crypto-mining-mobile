@@ -86,7 +86,7 @@ const Login = () => {
 				>
 					<div className="login-container bg-light shadow-2xl">
 						<div className="login-form-wrapper">
-							<span className="login-title">
+							<span className="login-title font-title">
 								Connectez-vous avec Connectify
 							</span>
 							<form
@@ -122,7 +122,6 @@ const Login = () => {
 										labelPlacement="floating"
 										fill="outline"
 										type="password"
-										placeholder="••••••••"
 										{...register("mdp", {
 											required: "Le mot de passe est requis"
 										})}

@@ -1,28 +1,21 @@
-import {
-  IonButton,
-  IonCard,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
-import ExploreContainer from "../components/ExploreContainer";
-import "./Home.css";
-import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
-import { useEffect, useState } from "react";
-import { doc, updateDoc } from "firebase/firestore";
-import { firestore } from "../firebase";
+import { IonButton, IonCard, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import ExploreContainer from '../components/ExploreContainer';
+import './Home.css';
+import { useEffect, useState } from 'react';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { doc, updateDoc } from 'firebase/firestore';
+import { firestore } from '../firebase';
+import { Link } from 'react-router';
 
-interface IUtilisateur {
-  id: number;
-  nom: string;
-  prenom: string;
-  genre: number;
-  mail: string;
-  motDePasse: string;
-  dateNaissance: string;
-  photoProfile: string;
+export interface IUtilisateur {
+	id: number;
+	nom: string;
+	prenom: string;
+	genre: number;
+	mail: string;
+	motDePasse: string;
+	dateNaissance: string;
+	photoProfile: string;
 }
 
 const Home: React.FC = () => {
@@ -83,19 +76,35 @@ const Home: React.FC = () => {
     setUser(userLS);
   }, []);
 
-  return (
-    <IonPage>
-      <IonContent fullscreen>
-        <IonCard>
-          {profil && <img src={profil} alt="profil pic" />}
+	return (
+		<IonPage>
+			<IonHeader>
+				<IonToolbar>
+					<IonTitle>Blank</IonTitle>
+				</IonToolbar>
+			</IonHeader>
+			<IonContent fullscreen>
+				<IonHeader collapse="condense">
+					<IonToolbar>
+						<IonTitle size="large">Blank</IonTitle>
+					</IonToolbar>
+				</IonHeader>
+				<ExploreContainer />
+				<IonCard>
+					{profil &&
+						<img src={profil} alt="profil pic" />
+					}
 
-          {profil && <p>{verif} ZOZOZI</p>}
-        </IonCard>
-        <IonButton onClick={takePicture}>START CAMERA</IonButton>
-        <p>{user?.mail}</p>
-      </IonContent>
-    </IonPage>
-  );
+					{profil &&
+						<p>{verif} ZOZOZI</p>
+					}
+				</IonCard>
+				<IonButton onClick={takePicture}>START CAMERA</IonButton>
+				<IonButton>GO TO profile <Link to={"/profil"}>ELLEKRA</Link></IonButton>
+				<p>{user?.mail}</p>
+			</IonContent>
+		</IonPage>
+	);
 };
 
 export default Home;

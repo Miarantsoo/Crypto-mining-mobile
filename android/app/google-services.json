@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "612385379858",
+    "project_id": "crypto-mining-2ce05",
+    "storage_bucket": "crypto-mining-2ce05.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:612385379858:android:0d66ac48de1635989b2acb",
+        "android_client_info": {
+          "package_name": "com.crypto.mining"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFOpKCGZdCuPnXRq9BFgOmPM8VWarDqgE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

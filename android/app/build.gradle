@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "io.ionic.starter"
+    namespace "com.crypto.mining"
     compileSdk rootProject.ext.compileSdkVersion
 
     compileOptions {
@@ -9,7 +9,7 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
     defaultConfig {
-        applicationId "io.ionic.starter"
+        applicationId "com.crypto.mining"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

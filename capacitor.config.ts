@@ -1,9 +1,12 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+  appId: 'com.crypto.mining',
   appName: 'Crypto-mining-mobile',
-  webDir: 'dist'
+  webDir: 'dist',
+  plugins: {
+    LocalNotifications: {}
+  },
 };
 
 export default config;

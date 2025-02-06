@@ -10,7 +10,6 @@ import { FaArrowRight } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import Bg from "../../assets/bg.jpg";
 import './Login.css';
-import '../../index.css';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { firestore } from '../../firebase';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -81,19 +80,19 @@ const Login = () => {
 		<IonPage>
 			<IonContent fullscreen>
 				<div
-					className="login-background"
+					className="flex items-center justify-center w-full h-full p-5"
 					style={{ backgroundImage: `url(${Bg})` }}
 				>
-					<div className="login-container bg-light shadow-2xl">
-						<div className="login-form-wrapper">
-							<span className="login-title font-title">
+					<div className="bg-light shadow-2xl rounded-lg">
+						<div className="flex flex-col p-5 gap-5">
+							<span className="font-title uppercase text-dark text-2xl text-center">
 								Connectez-vous avec Connectify
 							</span>
 							<form
 								className="login-form"
 								onSubmit={handleSubmit(onSubmit)}
 							>
-								<div className="input-wrapper">
+								<div className=" text-dark font-body">
 									<IonInput
 										label="Email"
 										labelPlacement="floating"
@@ -107,16 +106,16 @@ const Login = () => {
 												message: "Veuillez inserer un e-mail valide",
 											}
 										})}
-										className={errors.email ? 'ion-invalid text-dark' : ' font-dark'}
+										className={errors.email ? 'ion-invalid font-body' : 'font-body'}
 									/>
 									{errors.email && (
 										<IonText color="danger">
-											<small>{errors.email?.message}</small>
+											<small className="font-body">{errors.email?.message}</small>
 										</IonText>
 									)}
 								</div>
 
-								<div className="input-wrapper">
+								<div className=" text-dark font-body">
 									<IonInput
 										label="Mot de passe"
 										labelPlacement="floating"
@@ -125,7 +124,7 @@ const Login = () => {
 										{...register("mdp", {
 											required: "Le mot de passe est requis"
 										})}
-										className={errors.mdp ? 'ion-invalid text-dark' : ' font-dark'}
+										className={errors.mdp ? 'ion-invalid font-body' : 'font-body'}
 									/>
 									{errors.mdp && (
 										<IonText color="danger">
@@ -137,11 +136,12 @@ const Login = () => {
 								<IonButton
 									type="submit"
 									expand="block"
-									className="login-button"
+									className="rounded-lg"
+									style={{ '--background': '#1C32C4' }}
 								>
-									<div className="login-button-content">
+									<div className="bg-none text-light font-body font-bold flex flex-row gap-5">
 										<span>Continuer</span>
-										<FaArrowRight className="login-button-icon" />
+										<FaArrowRight className="" />
 									</div>
 								</IonButton>
 							</form>
@@ -165,6 +165,7 @@ const Login = () => {
 					  }}
 					duration={3000} 
 					position="bottom"
+					className="font-body"
 				/>
 			</IonContent>
 		</IonPage>

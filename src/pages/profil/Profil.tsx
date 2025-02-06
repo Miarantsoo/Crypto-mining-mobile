@@ -133,11 +133,11 @@ const Profil = () => {
                 <div className="my-3 flex flex-col gap-3">
                     <div className="py-3 px-5 border-b border-b-lavender font-body">
                         <h3 className="font-extrabold text-xl text-secondary">{user?.genre == 1 ? "Né" : "Née"} le</h3>
-                        <p className="text-dark">{dateNaissance}</p>
+                        <p className="text-darl">{dateNaissance}</p>
                     </div>
                     <div className="py-3 px-5 font-body">
                         <h3 className="font-extrabold text-xl text-secondary">Email</h3>
-                        <p className="text-dark">{user?.mail}</p>
+                        <p className="text-darl">{user?.mail}</p>
                     </div>
                 </div>
                 {!noChange &&

@@ -1,53 +1,62 @@
-import { IonButton, IonCard, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
-import './Home.css';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { useEffect, useState } from 'react';
-import PushNotificationService from '../services/PushNotificationService';
+import {
+  IonButton,
+  IonCard,
+  IonContent,
+  IonPage,
+} from "@ionic/react";
+import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
+import { useState } from "react";
+import "./Home.css";
+
+export interface NotificationData {
+  title: string;
+  content: string;
+  link: string;
+  image: string;
+  user: string;
+  date: Date;
+}
 
 const Home: React.FC = () => {
+  const [profil, setProfil] = useState<any>();
 
-	const [profil, setProfil] = useState<any>();
+  const takePicture = async () => {
+    const image = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.DataUrl,
+      source: CameraSource.Prompt,
+    });
+    setProfil(image.dataUrl);
+  };
 
-	const takePicture = async () => {
-		const image = await Camera.getPhoto({
-			quality: 90,
-			allowEditing: false,
-			resultType: CameraResultType.DataUrl,
-			source: CameraSource.Prompt
-		});
+  return (
+    <IonPage>
+      <IonContent fullscreen>
+        {/* <NotificationPopup /> */}
 
-		setProfil(image.dataUrl)
-	};
+        {/* Original Content */}
+        <IonCard>
+          {profil && (
+            <img
+              src={profil}
+              alt="profile"
+              style={{ maxWidth: "100%", height: "auto" }}
+            />
+          )}
+        </IonCard>
 
-	useEffect(() => {
-		PushNotificationService.initialize();
-	}, []);
+        <IonButton
+          expand="block"
+          onClick={takePicture}
+          className="font-title text-red-500"
+        >
+          Take Picture
+        </IonButton>
 
-
-	return (
-		<IonPage>
-			<IonHeader>
-				<IonToolbar>
-					<IonTitle>Blank</IonTitle>
-				</IonToolbar>
-			</IonHeader>
-			<IonContent fullscreen>
-				<IonHeader collapse="condense">
-					<IonToolbar>
-						<IonTitle size="large">Blank</IonTitle>
-					</IonToolbar>
-				</IonHeader>
-				<ExploreContainer />
-				<IonCard>
-					{profil && 
-						<img src={profil} alt="profil pic" />
-					}
-				</IonCard>
-				<IonButton onClick={takePicture}>START CAMERA</IonButton>
-			</IonContent>
-		</IonPage>
-	);
+      </IonContent>
+    </IonPage>
+  );
 };
 
 export default Home;

@@ -5,9 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Crypto-mining-mobile',
   webDir: 'dist',
   plugins: {
-    FirebaseMessaging: {
-      presentationOptions: ['badge', 'sound', 'alert'],
-    },
+    LocalNotifications: {}
   },
 };
 

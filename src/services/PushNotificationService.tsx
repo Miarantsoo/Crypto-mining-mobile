@@ -1,73 +1,94 @@
-// src/services/PushNotificationService.ts
-import { PushNotifications } from '@capacitor/push-notifications';
 import { FirebaseMessaging } from "@capacitor-firebase/messaging";
-import { LocalNotifications } from '@capacitor/local-notifications';
+import {
+  ActionPerformed,
+  LocalNotifications,
+} from "@capacitor/local-notifications";
+import { PushNotifications, Token } from "@capacitor/push-notifications";
+import { NotificationData } from "../pages/Home";
+
+// Track notification state
+let lastNotification: any = null;
+let fcmToken: string | null = null;
 
 const PushNotificationService = {
-  initialize: async () => {
-    try {
-      const permStatus = await PushNotifications.checkPermissions();
-      
-      if (permStatus.receive === 'prompt') {
-        await PushNotifications.requestPermissions();
-      }
+  getRandomId: () => Math.floor(Math.random() * 100000), // Small ID,
+  register: () => {
+    console.log("Initializing HomePage");
 
-      if (permStatus.receive !== 'granted') {
-        throw new Error('User denied permissions!');
-      }
+    // Register with Apple / Google to receive push via APNS/FCM
+    PushNotifications.register();
 
-      await PushNotifications.register();
-      await FirebaseMessaging.subscribeToTopic({ topic: 'default' });
+    // On success, we should be able to receive notifications
+    PushNotifications.addListener("registration", (token: Token) => {
+      console.log(`Registration success ${token}`);
+    });
 
-      // Set up listeners
-      PushNotifications.addListener('registration', (token) => {
-        console.log('Push registration success:', token);
-      });
+    // Some issue with our setup and push will not work
+    PushNotifications.addListener("registrationError", (error: any) => {
+      alert("Error on registration: " + JSON.stringify(error));
+    });
 
-      PushNotifications.addListener('pushNotificationReceived', (notification) => {
-        console.log('Push received:', notification);
+    // FirebaseMessaging.subscribeToTopic({ topic: 'nouveau_topic' });
+
+    let index = 1;
+
+    FirebaseMessaging.addListener(
+      "notificationReceived",
+      (notification: any) => {
+        const { title, body, image } = notification.notification ?? {};
         LocalNotifications.schedule({
-          notifications: [{
-            title: notification.title || 'New Notification',
-            body: notification.body || '',
-            id: Date.now()
-          }]
+          notifications: [
+            {
+              title: title,
+              body: body,
+              id: PushNotificationService.getRandomId(),
+              schedule: { at: new Date(new Date().getTime() + 1000) }, // 1 sec delay
+              sound: null,
+              attachments: null,
+              actionTypeId: "",
+              extra: null,
+            },
+          ],
         });
-      });
+      }
+    );
 
-      PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
-        console.log('Push action performed:', notification);
-      });
+    // Method called when tapping on a notification
+    PushNotifications.addListener(
+      "pushNotificationActionPerformed",
+      (notification: ActionPerformed) => {
+        // let data: NotificationData = notification.notification.data;
+      }
+    );
 
-    } catch (error) {
-      console.error('Push notifications initialization error:', error);
-      throw error;
-    }
+    LocalNotifications.addListener(
+      "localNotificationActionPerformed",
+      (notification) => {
+        let data: NotificationData = notification.notification.extra;
+      }
+    );
   },
-
-  getToken: async () => {
-    const result = await FirebaseMessaging.getToken();
-    return result.token;
-  },
-
-  subscribeToTopic: async (topic: string) => {
-    await FirebaseMessaging.subscribeToTopic({ topic });
-  },
-
-  unsubscribeFromTopic: async (topic: string) => {
-    await FirebaseMessaging.unsubscribeFromTopic({ topic });
-  },
-
-  addNotificationReceivedListener: async () => {
-    await FirebaseMessaging.addListener('notificationReceived', event => {
-      console.log('notificationReceived', { event });
+  initialize: () => {
+    PushNotifications.checkPermissions().then((res) => {
+      if (res.receive !== "granted") {
+        PushNotifications.requestPermissions().then((res) => {
+          if (res.receive === "denied") {
+            // alert("Push Notification permission denied");
+          } else {
+            // alert("Push Notification permission granted");
+            PushNotificationService.register();
+          }
+        });
+      } else {
+        PushNotificationService.register();
+      }
     });
   },
-  
-  addNotificationActionPerformedListener: async () => {
-    await FirebaseMessaging.addListener('notificationActionPerformed', event => {
-      console.log('notificationActionPerformed', { event });
-    });
+  subscribeTo: async (topic: string) => {
+    FirebaseMessaging.subscribeToTopic({ topic });
+  },
+  unSubscribeFrom: async (topic: string) => {
+    FirebaseMessaging.unsubscribeFromTopic({ topic });
   },
 };
 

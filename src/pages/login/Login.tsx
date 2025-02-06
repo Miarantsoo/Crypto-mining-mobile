@@ -16,6 +16,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { SHA256 } from 'crypto-js'
 import Loading from '../../components/loading/Loading';
 import { useNavigate } from 'react-router';
+import PushNotificationService from '../../services/PushNotificationService';
 
 type FormFields = {
 	email: string;
@@ -64,6 +65,7 @@ const Login = () => {
 			if (utilisateur?.motDePasse === SHA256(data.mdp).toString()) {
 				console.log(utilisateur);
 				await localStorage.setItem('utilisateur', JSON.stringify(utilisateur));
+				PushNotificationService.subscribeTo(`demandes-user-${utilisateur.id}`);
 				navigate("/home")
 			} else {
 				setShowToast(true);

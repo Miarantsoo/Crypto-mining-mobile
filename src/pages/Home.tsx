@@ -6,6 +6,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { Link, useNavigate } from 'react-router';
+import PushNotificationService from '../services/PushNotificationService';
 
 export interface IUtilisateur {
 	id: number;
@@ -83,6 +84,8 @@ const Home: React.FC = () => {
 			<IonContent fullscreen>
         <IonButton onClick={() => { navigation("/cours") }}>Cours</IonButton>
         <IonButton onClick={() => { navigation("/profil") }}>Profil</IonButton>
+        <IonButton onClick={() => { PushNotificationService.subscribeTo('crypto-1') }}>Sub to crypto 1</IonButton>
+        <IonButton onClick={() => { PushNotificationService.subscribeTo('crypto-2') }}>Sub to crypto 2</IonButton>
 				{/* <IonCard>
 					{profil &&
 						<img src={profil} alt="profil pic" />

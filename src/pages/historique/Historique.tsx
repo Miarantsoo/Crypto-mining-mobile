@@ -44,7 +44,6 @@ const Historique: React.FC = () => {
     const item = historiques[index];
     return <HistoriqueItem key={item.id} historique={item} style={style} />;
   };
-
   const navigation = useNavigate();
 
   return (

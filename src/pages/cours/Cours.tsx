@@ -69,12 +69,12 @@ const Cours = () => {
   }, [])
 
   useEffect(() => {
-    const histoRef = query(ref(db, "histo-crypto"), orderByKey(), limitToLast(50));
+    const histoRef = query(ref(db, "histo-crypto"), orderByKey(), limitToLast(150));
 
     const unsubscribe = onValue(histoRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
-        console.log(allCryptos);
+        console.log(data);
 
         const formattedData: HistoCrypto[] = Object.values(data)
         .filter((entry: any) => {

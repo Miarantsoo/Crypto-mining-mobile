@@ -1,5 +1,5 @@
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
+import {IonApp, IonContent, IonRouterOutlet, setupIonicReact} from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 
@@ -36,32 +36,35 @@ import Login from "./pages/login/Login";
 import PorteFeuille from "./pages/portefeuille/PorteFeuille";
 import Historique from "./pages/historique/Historique";
 import Solde from "./pages/solde/Solde";
+import Navbar from "./components/navigation/Navbar";
+import React from "react";
 setupIonicReact();
 
 const App: React.FC = () => {
 	return (
 		<IonApp>
 			<IonReactRouter>
-				<IonRouterOutlet>
-					<Route exact path="/home">
-						<Home />
-					</Route>
-					<Route exact path="/">
-						<Redirect to="/home" />
-					</Route>
-					<Route exact path="/login">
-						<Login />
-					</Route>
-					<Route exact path="/portefeuille">
-						<PorteFeuille />
-					</Route>
-					<Route exact path="/historique">
-						<Historique />
-					</Route>
-					<Route exact path="/solde">
-						<Solde />
-					</Route>
-				</IonRouterOutlet>
+					<IonRouterOutlet>
+						<Route exact path="/home">
+							<Home />
+						</Route>
+						<Route exact path="/">
+							<Redirect to="/home" />
+						</Route>
+						<Route exact path="/login">
+							<Login />
+						</Route>
+						<Route exact path="/portefeuille">
+							<PorteFeuille />
+						</Route>
+						<Route exact path="/historique">
+							<Historique />
+						</Route>
+						<Route exact path="/solde">
+							<Solde />
+						</Route>
+					</IonRouterOutlet>
+				<Navbar />
 			</IonReactRouter>
 		</IonApp>
 	);

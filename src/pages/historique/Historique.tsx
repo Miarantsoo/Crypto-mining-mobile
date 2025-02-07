@@ -64,13 +64,8 @@ const Historique: React.FC = () => {
   };
 
   return (
-    <IonPage>
-      <IonContent fullscreen>
-        <div className="min-h-dvh px-5 pt-8 bg-light">
-          <HiMiniChevronLeft
-            className="text-4xl text-dark mb-2 mt-5"
-            onClick={() => navigation(-1)}
-          />
+
+        <div className="">
           <div className="mb-5 px-2">
             <h1 className="font-title uppercase text-dark text-2xl">
               Historique
@@ -96,8 +91,6 @@ const Historique: React.FC = () => {
             </div>
           )}
         </div>
-      </IonContent>
-    </IonPage>
   );
 };
 

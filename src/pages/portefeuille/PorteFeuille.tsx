@@ -39,42 +39,42 @@ const PorteFeuille: React.FC = () => {
     );
   };
 
-  const navigation = useNavigate();
-
-
   return (
-    <IonPage>
-      <IonContent fullscreen>
-        <div className="min-h-dvh px-5 pt-8 bg-light">
-            <HiMiniChevronLeft
-                        className="text-4xl text-dark mb-2 mt-5"
-                        onClick={() => navigation(-1)}
-                      />
-          <div className="mb-5 px-2">
-            <h1 className="font-title uppercase text-dark text-2xl">
-              Portefeuille
-            </h1>
-            <h2 className="text-slate-500 font-body text-xs">
-              Toutes les cryptos en votre possession
-            </h2>
-          </div>
-          {portefeuille && portefeuille.length > 0 ? (
-            <div className="demande-list-container">
-              <FixedSizeList
-                height={window.innerHeight * 0.7}
-                width="100%"
-                itemSize={180}
-                itemCount={portefeuille.length}
-              >
-                {rowRenderer}
-              </FixedSizeList>
-            </div>
-          ) : (
-            <div className="demande-no-data">Aucune crypto pour le moment.</div>
-          )}
+    // <IonPage>
+    //   <IonContent fullscreen>
+    //     <div className="min-h-dvh px-5 pt-8 bg-light">
+    //         <HiMiniChevronLeft
+    //                     className="text-4xl text-dark mb-2 mt-5"
+    //                     onClick={() => navigation(-1)}
+    //                   />
+    <div>
+      <div className="mb-5 px-2">
+        <h1 className="font-title uppercase text-dark text-2xl">
+          Portefeuille
+        </h1>
+        <h2 className="text-slate-500 font-body text-xs">
+          Toutes les cryptos en votre possession
+        </h2>
+      </div>
+      {portefeuille && portefeuille.length > 0 ? (
+        <div className="demande-list-container">
+          <FixedSizeList
+            height={window.innerHeight * 0.7}
+            width="100%"
+            itemSize={180}
+            itemCount={portefeuille.length}
+          >
+            {rowRenderer}
+          </FixedSizeList>
         </div>
-      </IonContent>
-    </IonPage>
+      ) : (
+        <div className="demande-no-data">Aucune crypto pour le moment.</div>
+      )}
+    </div>
+
+    //     </div>
+    //   </IonContent>
+    // </IonPage>
   );
 };
 

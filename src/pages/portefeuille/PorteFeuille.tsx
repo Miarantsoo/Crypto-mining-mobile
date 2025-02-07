@@ -4,30 +4,31 @@ import { IonContent, IonPage } from "@ionic/react";
 import "./PorteFeuille.css";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
 import PorteFeuilleItem, { PorteFeuilleType } from "../../components/portefeuille/PorteFeuilleItem";
-import axios from "axios";
 
 const PorteFeuille: React.FC = () => {
-    const [portefeuille, setPortefeuille] = useState<PorteFeuilleType[] | null>(null);
-
-    const fetchWallet = async () => {
-        try {
-            const response = await axios.get('http://localhost:8089/api/mvt-crypto/wallet/1');
-            console.log(response.data);
-            setPortefeuille(response.data);
-        } catch (error) {
-            console.error("Erreur lors de la récupération des données :", error);
+    const portefeuille: PorteFeuilleType[] = [
+        {
+            quantite: 2,
+            crypto: {id: 1, nom: "Bitcoin", daty: "2023-10-01T12:00:00"},
+            valeur: 80000
+        },
+        {
+            quantite: 10,
+            crypto: {id: 2, nom: "Ethereum", daty: "2023-10-02T12:00:00"},
+            valeur: 25000
+        },
+        {
+            quantite: 5000,
+            crypto: {id: 3, nom: "Cardano", daty: "2023-10-03T12:00:00"},
+            valeur: 2500
         }
-    }
-
-    useEffect( () => {
-        fetchWallet();
-    }, []);
+    ];
 
     const rowRenderer = ({ index, style }: ListChildComponentProps) => {
         const item = portefeuille[index];
         return (
             <PorteFeuilleItem
-                key={item.id}
+                key={item.crypto.id}
                 portefeuille={item}
                 style={style}
             />

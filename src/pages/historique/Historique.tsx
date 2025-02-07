@@ -4,24 +4,37 @@ import { IonContent, IonPage } from "@ionic/react";
 import "./Historique.css";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
 import HistoriqueItem, { HistoriqueType } from "../../components/historique/HistoriqueItem";
-import axios from 'axios';
 
 const Historique: React.FC = () => {
-    const [historiques, setHistoriques] = useState<HistoriqueType[] | null>(null);
-
-    const fetchHistoriques = async () => {
-        try {
-            const response = await axios.get('http://localhost:8089/api/mvt-crypto/list/1');
-            console.log(response.data);
-            setHistoriques(response.data);
-        } catch (error) {
-            console.error("Erreur lors de la récupération des données :", error);
-        }
-    };
-
-    useEffect(() => {
-        fetchHistoriques();
-    }, [])
+    const historiques: HistoriqueType[] = [
+        {
+            id: 1,
+            iduUser: 101,
+            idCrypto: {id: 1, nom: "Bitcoin", daty: "2025-02-07T00:00:00.000Z"},
+            daty: "2025-02-07T00:00:00.000Z",
+            achat: 2,
+            vente: 0,
+            valeur: 50000,
+        },
+        {
+            id: 2,
+            iduUser: 102,
+            idCrypto: {id: 2, nom: "Ethereum", daty: "2025-02-07T00:00:00.000Z",},
+            daty: "2025-02-07T00:00:00.000Z",
+            achat: 1,
+            vente: 1,
+            valeur: 3000,
+        },
+        {
+            id: 3,
+            iduUser: 103,
+            idCrypto: {id: 3, nom: "Ripple", daty: "2025-02-07T00:00:00.000Z",},
+            daty: "2025-02-07T00:00:00.000Z",
+            achat: 10,
+            vente: 5,
+            valeur: 1,
+        },
+    ];
 
     const rowRenderer = ({ index, style }: ListChildComponentProps) => {
         const item = historiques[index];

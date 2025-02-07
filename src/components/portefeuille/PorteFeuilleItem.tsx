@@ -4,7 +4,7 @@ import FR from "date-fns/locale/fr";
 import "../../pages/portefeuille/PorteFeuille.css";
 
 export type PorteFeuilleType = {
-    quatite:number;
+    quantite:number;
     crypto:{
         id:number,
         nom:string,

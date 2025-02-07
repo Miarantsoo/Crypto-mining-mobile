@@ -8,6 +8,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db, firestore } from "../../firebase";
 import Loading from "../../components/loading/Loading";
 import { limitToLast, onValue, orderByKey, query, ref } from "firebase/database";
+import {HiStar} from "react-icons/hi";
 
 type HistoCrypto = {
   id: number;
@@ -33,6 +34,13 @@ const Cours = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [cryptoHistory, setCryptoHistory] = useState<HistoCrypto[]>([]);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(value);
+  };
+
+
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -100,8 +108,8 @@ const Cours = () => {
       <IonContent className="">
         <div className="bg-light shadow-2xl w-full min-h-dvh pb-5 pt-10 px-5">
           <HiMiniChevronLeft
-            className="text-4xl text-dark mb-2"
-            onClick={() => navigation(-1)}
+              className="text-4xl text-dark mb-2"
+              onClick={() => navigation(-1)}
           />
 
           <div className="ml-2 mb-10">
@@ -113,33 +121,44 @@ const Cours = () => {
             </p>
           </div>
 
+          <div className="flex items-center justify-between bg-gradient-to-br from-secondary to-main shadow-md rounded-lg p-3 mb-5">
+            <span className="text-white font-body text-lg">{allCryptos[selectedIndex]?.nom}</span>
+            <div className="flex items-center gap-2">
+              <span className="text-white font-body text-lg">{formatCurrency(cryptoHistory.at(-1)?.valeur || 0)}</span>
+              <HiStar
+                  className={`text-2xl cursor-pointer ${isFavorite ? "text-yellow-500" : "text-gray-400"}`}
+                  onClick={() => setIsFavorite(!isFavorite)}
+              />
+            </div>
+          </div>
+
           <div ref={containerRef} className="w-full h-[350px] mb-2">
             <LineChart
-              key={selectedIndex}
-              width={dimensions.width}
-              height={dimensions.height}
-              series={[
-                {
-                  data: cryptoHistory.map((entry) => entry.valeur),
-                  curve: "linear",
-                },
-              ]}
-              xAxis={[
-                {
-                  data: cryptoHistory.map((entry) => new Date(entry.daty.epochSecond * 1000)),
-                  scaleType: "time",
-                  valueFormatter: (date: Date) =>
-                    date.toLocaleTimeString("fr-FR", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                      timeZone: "UTC",
-                    }),
-                },
-              ]}
-              colors={["#1C32C4"]}
-              margin={{ left: 30, right: 10, top: 30, bottom: 30 }}
-              grid={{ vertical: false, horizontal: true }}
+                key={selectedIndex}
+                width={dimensions.width}
+                height={dimensions.height}
+                series={[
+                  {
+                    data: cryptoHistory.map((entry) => entry.valeur),
+                    curve: "linear",
+                  },
+                ]}
+                xAxis={[
+                  {
+                    data: cryptoHistory.map((entry) => new Date(entry.daty.epochSecond * 1000)),
+                    scaleType: "time",
+                    valueFormatter: (date: Date) =>
+                        date.toLocaleTimeString("fr-FR", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                          timeZone: "UTC",
+                        }),
+                  },
+                ]}
+                colors={["#1C32C4"]}
+                margin={{left: 30, right: 10, top: 30, bottom: 30}}
+                grid={{vertical: false, horizontal: true}}
             />
           </div>
 
@@ -148,30 +167,30 @@ const Cours = () => {
               {allCryptos.map((crypto, index) => {
                 const position = index - selectedIndex;
                 return (
-                  <motion.div
-                    key={crypto.id}
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{
-                      opacity:
-                        Math.abs(position) === 1 ? 0.5 : position === 0 ? 1 : 0,
-                      x: position * 90,
-                      scale: position === 0 ? 1.2 : 1,
-                    }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ type: "spring", stiffness: 120 }}
-                    className={`absolute text-sm font-bold cursor-pointer font-title uppercase ${position === 0 ? "text-main" : "text-slate-500"
-                      }`}
-                    onClick={() => setSelectedIndex(index)}
-                  >
-                    {crypto.nom}
-                  </motion.div>
+                    <motion.div
+                        key={crypto.id}
+                        initial={{opacity: 0, x: 50}}
+                        animate={{
+                          opacity:
+                              Math.abs(position) === 1 ? 0.5 : position === 0 ? 1 : 0,
+                          x: position * 90,
+                          scale: position === 0 ? 1.2 : 1,
+                        }}
+                        exit={{opacity: 0, x: -50}}
+                        transition={{type: "spring", stiffness: 120}}
+                        className={`absolute text-sm font-bold cursor-pointer font-title uppercase ${position === 0 ? "text-main" : "text-slate-500"
+                        }`}
+                        onClick={() => setSelectedIndex(index)}
+                    >
+                      {crypto.nom}
+                    </motion.div>
                 );
               })}
             </AnimatePresence>
           </div>
         </div>
         {load &&
-          <Loading />
+            <Loading/>
         }
       </IonContent>
     </IonPage>

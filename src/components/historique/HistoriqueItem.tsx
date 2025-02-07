@@ -24,29 +24,31 @@ export type HistoriqueItemProps = {
 
 const HistoriqueItem: React.FC<HistoriqueItemProps> = ({ historique, style }) => {
     return (
-        <div style={style} className="portefeuille-item">
-            <div className="portefeuille-item-content">
-                <div className="portefeuille-item-row">
-                    <div className="portefeuille-item-cell">
-                        <span className="portefeuille-item-label">{historique.idCrypto.nom}</span>
+        <div style={style} className="font-body px-5">
+            <div className="">
+                <div className="mb-5">
+                    <div className="">
+                        <div className="">
+                            <span className="text-main font-title font-bold">{historique.idCrypto.nom}</span>
+                        </div>
+                    </div>
+                    <div className="">
+                        <div className="text-dark">
+                            {format(new Date(historique.daty), "d MMMM yyyy", { locale: FR })}
+                        </div>
                     </div>
                 </div>
-                <div className="portefeuille-item-row">
-                    <div className="portefeuille-item-cell">
-                        {format(new Date(historique.daty), "d MMMM yyyy", { locale: FR })}
+                <div className="flex flex-row gap-5">
+                    <div className="text-dark">
+                        <span className="font-bold">Achat:</span> {historique.achat}
+                    </div>
+                    <div className="text-dark">
+                        <span className="font-bold">Vente:</span> {historique.vente}
                     </div>
                 </div>
-                <div className="portefeuille-item-row">
-                    <div className="portefeuille-item-cell">
-                        <span className="portefeuille-item-label">Achat:</span> {historique.achat}
-                    </div>
-                    <div className="portefeuille-item-cell">
-                        <span className="portefeuille-item-label">Vente:</span> {historique.vente}
-                    </div>
-                </div>
-                <div className="portefeuille-item-row">
-                    <div className="portefeuille-item-cell">
-                        <span className="portefeuille-item-label">Valeur:</span> {historique.valeur} €
+                <div className="">
+                    <div className="text-dark">
+                        <span className="font-bold">Valeur:</span> {historique.valeur} €
                     </div>
                 </div>
                 <hr className="portefeuille-item-separator" />

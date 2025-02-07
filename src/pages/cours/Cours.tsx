@@ -108,8 +108,8 @@ const Cours = () => {
       <IonContent className="">
         <div className="bg-light shadow-2xl w-full min-h-dvh pb-5 pt-10 px-5">
           <HiMiniChevronLeft
-              className="text-4xl text-dark mb-2"
-              onClick={() => navigation(-1)}
+            className="text-4xl text-dark mb-2 mt-5"
+            onClick={() => navigation(-1)}
           />
 
           <div className="ml-2 mb-10">
@@ -134,31 +134,31 @@ const Cours = () => {
 
           <div ref={containerRef} className="w-full h-[350px] mb-2">
             <LineChart
-                key={selectedIndex}
-                width={dimensions.width}
-                height={dimensions.height}
-                series={[
-                  {
-                    data: cryptoHistory.map((entry) => entry.valeur),
-                    curve: "linear",
-                  },
-                ]}
-                xAxis={[
-                  {
-                    data: cryptoHistory.map((entry) => new Date(entry.daty.epochSecond * 1000)),
-                    scaleType: "time",
-                    valueFormatter: (date: Date) =>
-                        date.toLocaleTimeString("fr-FR", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          second: "2-digit",
-                          timeZone: "UTC",
-                        }),
-                  },
-                ]}
-                colors={["#1C32C4"]}
-                margin={{left: 30, right: 10, top: 30, bottom: 30}}
-                grid={{vertical: false, horizontal: true}}
+              key={selectedIndex}
+              width={dimensions.width}
+              height={dimensions.height}
+              series={[
+                {
+                  data: cryptoHistory.map((entry) => entry.valeur),
+                  curve: "linear",
+                },
+              ]}
+              xAxis={[
+                {
+                  data: cryptoHistory.map((entry) => new Date(entry.daty.epochSecond * 1000)),
+                  scaleType: "time",
+                  valueFormatter: (date: Date) =>
+                    date.toLocaleTimeString("fr-FR", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                      timeZone: "UTC",
+                    }),
+                },
+              ]}
+              colors={["#1C32C4"]}
+              margin={{ left: 50, right: 10, top: 30, bottom: 30 }}
+              grid={{ vertical: false, horizontal: true }}
             />
           </div>
 

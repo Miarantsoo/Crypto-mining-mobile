@@ -24,13 +24,7 @@ export const browserRouter = createBrowserRouter([
     },
     { 
         path: "/profil",
-        element: <StandaloneCard />,
-        children: [
-            {
-                path: "",
-                element: <Profil />
-            }
-        ]
+        element: <Profil />
     },
     { 
         path: "/cours",

@@ -105,8 +105,8 @@ const Cours = () => {
 
   return (
     <IonPage>
-      <IonContent className="">
-        <div className="bg-light shadow-2xl w-full min-h-dvh pb-5 pt-10 px-5">
+      <IonContent className="pb-52">
+        <div className="bg-light shadow-2xl w-full min-h-dvh pb-5 pt-10 px-5 pb-52">
           <HiMiniChevronLeft
             className="text-4xl text-dark mb-2 mt-5"
             onClick={() => navigation(-1)}

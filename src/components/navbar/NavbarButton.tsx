@@ -2,37 +2,58 @@ import { AdvancedImage } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen";
 import { IonButton } from "@ionic/react";
 import { useNavigate } from "react-router";
+import { auto } from "@cloudinary/url-gen/actions/resize";
+import { autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
+import { IconType } from "react-icons"; // Import type for icons
 
-const cld = new Cloudinary({ cloud_name: "your_cloud_name" });
+interface RedirectionProps {
+  destination: string;
+  isCenter?: boolean;
+  icon?: any; // Updated type for icon
+  imgUrl?: string;
+  navBarCollapsed:boolean;
+  label: string;
+}
 
-const NavbarButton = ({ link, isCenter = false, icon: Icon, imageUrl }) => {
-  const navigation = useNavigate();
-  
-  const handleClick = () => {
-    navigation(link);
-  };
+const NavbarButton: React.FC<RedirectionProps> = ({
+  destination,
+  isCenter = false,
+  icon,
+  imgUrl,
+  navBarCollapsed,
+  label
+}) => {
+  const navigate = useNavigate();
+  const cld = new Cloudinary({ cloud: { cloudName: "djaekualm" } });
+
+  const img = imgUrl
+    ? cld
+        .image(imgUrl)
+        .format("auto")
+        .quality("auto")
+        .resize(auto().gravity(autoGravity()).width(50).height(50))
+    : null;
+
+    const handleClick = () => {
+        if (!navBarCollapsed) {
+            navigate(destination);
+        }
+    }
 
   return (
-    <IonButton
-      fill="clear"
+    <div
       onClick={handleClick}
-      style={{
-        background: "transparent",
-        borderRadius: "50%",
-        width: isCenter ? "60px" : "40px",
-        height: isCenter ? "60px" : "40px",
-        transform: isCenter ? "translateY(-10px)" : "none",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
+      className={`cursor-pointer overflow-hidden bg-light flex flex-col items-center ${
+        isCenter ? "-translate-y-5 text-light rounded-full w-[50px] h-[50px] justify-center" : "text-dark"
+      }`}
     >
-      {imageUrl ? (
-        <AdvancedImage cldImg={cld.image(imageUrl)} style={{ borderRadius: "50%", width: "100%", height: "100%" }} />
-      ) : (
-        Icon && <Icon size={24} />
-      )}
-    </IonButton>
+      {imgUrl ? (
+        <AdvancedImage cldImg={img!} />
+      ) : icon ? (
+        icon
+      ) : null}
+      <span className="text-[9px] font-body mt-1 text-slate-500">{label}</span>
+    </div>
   );
 };
 

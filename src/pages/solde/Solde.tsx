@@ -14,11 +14,13 @@ import { useNavigate } from "react-router";
 import {IUtilisateur} from "../Home";
 
 import { getFirestore, collection, query, orderBy, limit, getDocs, doc, setDoc } from "firebase/firestore";
+import Loading from "../../components/loading/Loading";
 
 const Solde = () => {
   const [somme, setSomme] = useState<string>("");
   const [errors, setErrors] = useState<{ somme?: string }>({});
   const [lastId, setLastId] = useState<number>(0);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const db = getFirestore();
 
@@ -47,6 +49,7 @@ const Solde = () => {
     try {
       const docRef = doc(collection(db, "demande"), data.id.toString());
       await setDoc(docRef, data);
+      setIsSubmitting(false);
       console.log("Demande envoyée avec succès !");
     } catch (error) {
       console.error("Erreur lors de l'envoi de la demande :", error);
@@ -62,6 +65,7 @@ const Solde = () => {
       operation: "depot" | "retrait"
   ) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const newErrors: { somme?: string } = {};
 
@@ -122,7 +126,8 @@ const Solde = () => {
                     Demande de dépôt ou retrait
                   </p>
                 </div>
-                <form className="text-dark font-body">
+                <form className="text-dark font-body relative">
+                  { isSubmitting && (<Loading />) }
                   <div className="input-wrapper">
                     <IonInput
                         label="Somme"

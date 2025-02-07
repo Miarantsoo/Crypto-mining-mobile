@@ -10,6 +10,7 @@ import { HiMiniChevronLeft } from "react-icons/hi2";
 import { useNavigate } from "react-router";
 import {collection, getDocs, getFirestore, query, where} from "firebase/firestore";
 import {IUtilisateur} from "../Home";
+import Loading from "../../components/loading/Loading";
 
 const Historique: React.FC = () => {
   const [historiques, setHistoriques] = useState<HistoriqueType[]>([]);
@@ -86,9 +87,7 @@ const Historique: React.FC = () => {
               </FixedSizeList>
             </div>
           ) : (
-            <div className="portefeuille-no-data">
-              Aucune historique pour le moment.
-            </div>
+            <Loading />
           )}
         </div>
   );

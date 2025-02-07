@@ -24,12 +24,11 @@ export type HistoriqueItemProps = {
 
 const HistoriqueItem: React.FC<HistoriqueItemProps> = ({ historique, style }) => {
     return (
-        <div style={style} className="font-body px-5">
-            <div className="">
+        <div className="font-body px-5 my-5 py-8 rounded-lg border">
                 <div className="mb-5">
                     <div className="">
                         <div className="">
-                            <span className="text-main font-title font-bold">{historique.idCrypto.nom}</span>
+                            <span className="text-main font-title font-bold text-lg">{historique.idCrypto.nom}</span>
                         </div>
                     </div>
                     <div className="">
@@ -51,8 +50,6 @@ const HistoriqueItem: React.FC<HistoriqueItemProps> = ({ historique, style }) =>
                         <span className="font-bold">Valeur:</span> {historique.valeur} €
                     </div>
                 </div>
-                <hr className="portefeuille-item-separator" />
-            </div>
         </div>
     );
 };

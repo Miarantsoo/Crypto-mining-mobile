@@ -7,6 +7,7 @@ import Cours from '../pages/cours/Cours'
 import Historique from "../pages/historique/Historique";
 import PorteFeuille from "../pages/portefeuille/PorteFeuille";
 import Solde from "../pages/solde/Solde";
+import StandaloneCard from '../pages/standalone/StandaloneCard'
 
 export const browserRouter = createBrowserRouter([
     {
@@ -23,22 +24,52 @@ export const browserRouter = createBrowserRouter([
     },
     { 
         path: "/profil",
-        element: <Profil />
+        element: <StandaloneCard />,
+        children: [
+            {
+                path: "",
+                element: <Profil />
+            }
+        ]
     },
     { 
         path: "/cours",
-        element: <Cours />
+        element: <StandaloneCard />,
+        children: [
+            {
+                path: "",
+                element: <Cours />
+            }
+        ]
     },
     {
-        path: "/historiques",
-        element: <Historique />
+        path: "/historique",
+        element: <StandaloneCard />,
+        children: [
+            {
+                path: "",
+                element: <Historique />
+            }
+        ]
     },
     {
         path: "/portefeuille",
-        element: <PorteFeuille />
+        element: <StandaloneCard />,
+        children: [
+            {
+                path: "",
+                element: <PorteFeuille />
+            }
+        ]
     },
     {
         path: "/demande",
-        element: <Solde />
+        element: <StandaloneCard />,
+        children: [
+            {
+                path: "",
+                element: <Solde />
+            }
+        ]
     },
 ])

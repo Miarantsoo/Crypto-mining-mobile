@@ -9,14 +9,14 @@ import { Link, useNavigate } from 'react-router';
 import PushNotificationService from '../services/PushNotificationService';
 
 export interface IUtilisateur {
-	id: number;
-	nom: string;
-	prenom: string;
-	genre: number;
-	mail: string;
-	motDePasse: string;
-	dateNaissance: string;
-	photoProfile: string;
+  id: number;
+  nom: string;
+  prenom: string;
+  genre: number;
+  mail: string;
+  motDePasse: string;
+  dateNaissance: string;
+  photoProfile: string;
 }
 
 const Home: React.FC = () => {
@@ -76,31 +76,33 @@ const Home: React.FC = () => {
     const userLS = JSON.parse(localStorage.getItem("utilisateur") || "{}");
     setUser(userLS);
   }, []);
-  
+
   const navigation = useNavigate();
 
-	return (
-		<IonPage>
-			<IonContent fullscreen>
-        <IonButton onClick={() => { navigation("/cours") }}>Cours</IonButton>
-        <IonButton onClick={() => { navigation("/profil") }}>Profil</IonButton>
-        <IonButton onClick={() => { PushNotificationService.subscribeTo('crypto-1') }}>Sub to crypto 1</IonButton>
-        <IonButton onClick={() => { PushNotificationService.subscribeTo('crypto-2') }}>Sub to crypto 2</IonButton>
-				{/* <IonCard>
-					{profil &&
-						<img src={profil} alt="profil pic" />
-					}
+  return (
+    <IonPage>
+      <IonContent fullscreen>
+        <div className='w-full mt-32'>
+          <IonButton onClick={() => { navigation("/cours") }}>Cours</IonButton>
+          <IonButton onClick={() => { navigation("/profil") }}>Profil</IonButton>
+          <IonButton onClick={() => { PushNotificationService.subscribeTo('crypto-1') }}>Sub to crypto 1</IonButton>
+          <IonButton onClick={() => { PushNotificationService.subscribeTo('crypto-2') }}>Sub to crypto 2</IonButton>
+          {/* <IonCard>
+            {profil &&
+              <img src={profil} alt="profil pic" />
+            }
 
-					{profil &&
-						<p>{verif} ZOZOZI</p>
-					}
-				</IonCard>
-				<IonButton onClick={takePicture}>START CAMERA</IonButton>
-				<IonButton>GO TO profile <Link to={"/profil"}>ELLEKRA</Link></IonButton>
-				<p>{user?.mail}</p> */}
-			</IonContent>
-		</IonPage>
-	);
+            {profil &&
+              <p>{verif} ZOZOZI</p>
+            }
+          </IonCard>
+          <IonButton onClick={takePicture}>START CAMERA</IonButton>
+          <IonButton>GO TO profile <Link to={"/profil"}>ELLEKRA</Link></IonButton>
+          <p>{user?.mail}</p> */}
+        </div>
+      </IonContent>
+    </IonPage>
+  );
 };
 
 export default Home;

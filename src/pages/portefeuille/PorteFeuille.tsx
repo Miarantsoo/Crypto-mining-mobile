@@ -27,7 +27,7 @@ const PorteFeuille: React.FC = () => {
         const item = portefeuille[index];
         return (
             <PorteFeuilleItem
-                key={item.crypto.id}
+                key={item.id}
                 portefeuille={item}
                 style={style}
             />

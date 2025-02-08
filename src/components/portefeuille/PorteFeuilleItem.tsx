@@ -1,6 +1,4 @@
 import React from "react";
-import { format } from "date-fns";
-import FR from "date-fns/locale/fr";
 import "../../pages/portefeuille/PorteFeuille.css";
 
 export type PorteFeuilleType = {
@@ -10,7 +8,6 @@ export type PorteFeuilleType = {
     nom: string;
     daty: string;
   };
-  valeur: number;
 };
 
 export type PorteFeuilleItemProps = {
@@ -34,9 +31,6 @@ const PorteFeuilleItem: React.FC<PorteFeuilleItemProps> = ({
         </div>
       </div>
       <div className="">
-        <div className="text-dark">
-          <span className="font-bold">Valeur :</span> {portefeuille.valeur} €
-        </div>
         <div className="text-dark">
           <span className="font-bold">Quantité :</span> {portefeuille.quantite}
         </div>

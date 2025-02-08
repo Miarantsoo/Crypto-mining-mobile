@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Bg from "../../assets/bg.jpg";
-import { IonContent, IonPage } from "@ionic/react";
 import "./Historique.css";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
 import HistoriqueItem, {
   HistoriqueType,
 } from "../../components/historique/HistoriqueItem";
-import { HiMiniChevronLeft } from "react-icons/hi2";
 import { useNavigate } from "react-router";
 import {collection, getDocs, getFirestore, query, where} from "firebase/firestore";
 import {IUtilisateur} from "../Home";

@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Bg from "../../assets/bg.jpg";
-import { IonContent, IonPage } from "@ionic/react";
 import "./Historique.css";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
 import HistoriqueItem, {
   HistoriqueType,
 } from "../../components/historique/HistoriqueItem";
-import { HiMiniChevronLeft } from "react-icons/hi2";
 import { useNavigate } from "react-router";
 import {collection, getDocs, getFirestore, query, where} from "firebase/firestore";
 import {IUtilisateur} from "../Home";
@@ -23,6 +20,15 @@ const Historique: React.FC = () => {
       return new Date(timestamp.epochSecond * 1000);
     }
     return null;
+  };
+
+  const sortHistoriqueByDate = (historiques: HistoriqueType[]): HistoriqueType[] => {
+    return historiques.sort((a, b) => {
+      const dateA = new Date(a.daty);
+      const dateB = new Date(b.daty);
+
+      return dateB.getTime() - dateA.getTime();
+    });
   };
 
   useEffect(() => {
@@ -47,7 +53,9 @@ const Historique: React.FC = () => {
           fetchedHistoriques.push(data);
         });
         console.log(fetchedHistoriques);
-        setHistoriques(fetchedHistoriques);
+        const order = sortHistoriqueByDate(fetchedHistoriques);
+        console.log(order);
+        setHistoriques(order);
       } catch (error) {
         console.error("Erreur lors de la récupération des historiques :", error);
       }

@@ -30,6 +30,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import PushNotificationService from './services/PushNotificationService';
+import { LocalNotifications } from '@capacitor/local-notifications';
 setupIonicReact();
 
 const App: React.FC = () => {
@@ -38,6 +39,21 @@ const App: React.FC = () => {
 
 	useEffect(() => {
 		PushNotificationService.initialize();
+		LocalNotifications.schedule({
+			notifications: [
+				{
+				  title: "title",
+				  body: "body",
+				  id: PushNotificationService.getRandomId(),
+				  schedule: { at: new Date(new Date().getTime() + 1000) }, // 1 sec delay
+				  sound: null,
+				  attachments: null,
+				  actionTypeId: "",
+				  extra: null,
+				  smallIcon: "base_small",
+				},
+			  ],
+		})
 		PushNotificationService.subscribeTo('nouveau_topic');
 		navigate("/login")
 	  }, []);

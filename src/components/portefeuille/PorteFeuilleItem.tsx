@@ -4,46 +4,45 @@ import FR from "date-fns/locale/fr";
 import "../../pages/portefeuille/PorteFeuille.css";
 
 export type PorteFeuilleType = {
-    quantite:number;
-    crypto:{
-        id:number,
-        nom:string,
-        daty:string
-    };
-    valeur:number;
+  quantite: number;
+  crypto: {
+    id: number;
+    nom: string;
+    daty: string;
+  };
+  valeur: number;
 };
 
 export type PorteFeuilleItemProps = {
-    portefeuille: PorteFeuilleType;
-    style: React.CSSProperties;
+  portefeuille: PorteFeuilleType;
+  style: React.CSSProperties;
 };
 
-const PorteFeuilleItem: React.FC<PorteFeuilleItemProps> = ({ portefeuille, style}) => {
-    return (
-        <div style={style} className="demande-item">
-            <div className="demande-item-content">
-                <div className="demande-item-row">
-                    <div className="demande-item-cell">
-                        <span className="demande-item-label">{portefeuille.crypto.nom}</span>
-                    </div>
-                </div>
-                <div className="demande-item-row">
-                    <div className="demande-item-cell">
-                        {format(new Date(portefeuille.crypto.daty), "d MMMM yyyy", { locale: FR })}
-                    </div>
-                </div>
-                <div className="demande-item-row">
-                    <div className="demande-item-cell">
-                        <span className="demande-item-label">Quantite:</span> {portefeuille.quantite}
-                    </div>
-                    <div className="demande-item-cell">
-                        <span className="demande-item-label">Valeur:</span> {portefeuille.valeur} €
-                    </div>
-                </div>
-                <hr className="demande-item-separator" />
-            </div>
+const PorteFeuilleItem: React.FC<PorteFeuilleItemProps> = ({
+  portefeuille,
+  style,
+}) => {
+  return (
+    <div className="font-body px-5 my-5 py-8 rounded-lg border">
+      <div className="mb-5">
+        <div className="">
+          <div className="">
+            <span className="text-main font-title font-bold text-lg">
+              {portefeuille.crypto.nom}
+            </span>
+          </div>
         </div>
-    );
+      </div>
+      <div className="">
+        <div className="text-dark">
+          <span className="font-bold">Valeur :</span> {portefeuille.valeur} €
+        </div>
+        <div className="text-dark">
+          <span className="font-bold">Quantité :</span> {portefeuille.quantite}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default PorteFeuilleItem;

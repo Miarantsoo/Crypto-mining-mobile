@@ -1,21 +1,26 @@
-import {
-  IonPage,
-  IonContent,
-} from "@ionic/react";
-import Bg from "../../assets/bg.jpg";
-import { Outlet } from "react-router";
+import { IonPage, IonContent } from "@ionic/react";
+import { Outlet, useNavigate } from "react-router";
+import { HiMiniChevronLeft } from "react-icons/hi2";
+import FootBar from "../../components/navbar/FootBar";
 
 const StandaloneCard = () => {
+  const navigation = useNavigate();
+
   return (
     <IonPage>
       <IonContent fullscreen>
-        <div
-          className="flex items-center justify-center w-full h-full p-5"
-          style={{ backgroundImage: `url(${Bg})` }}
-        >
-          <div className="bg-light shadow-2xl rounded-lg">
-            <Outlet></Outlet>
-          </div>
+        <div className="min-h-dvh px-5 pt-8 pb-56 bg-light relative">
+          {/* Back Button */}
+          <HiMiniChevronLeft
+            className="text-4xl text-dark mb-2 mt-5"
+            onClick={() => navigation(-1)}
+          />
+
+          {/* Main Content */}
+          <Outlet />
+
+          {/* Floating Bottom Navigation */}
+          <FootBar></FootBar>
         </div>
       </IonContent>
     </IonPage>

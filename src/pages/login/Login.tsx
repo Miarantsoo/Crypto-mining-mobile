@@ -66,7 +66,7 @@ const Login = () => {
 				console.log(utilisateur);
 				await localStorage.setItem('utilisateur', JSON.stringify(utilisateur));
 				PushNotificationService.subscribeTo(`demandes-user-${utilisateur.id}`);
-				navigate("/home")
+				navigate("/cours")
 			} else {
 				setShowToast(true);
 				setMessageToast("Votre mot de passe est erroné. Veuillez réessayer")

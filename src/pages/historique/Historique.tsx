@@ -22,6 +22,15 @@ const Historique: React.FC = () => {
     return null;
   };
 
+  const sortHistoriqueByDate = (historiques: HistoriqueType[]): HistoriqueType[] => {
+    return historiques.sort((a, b) => {
+      const dateA = new Date(a.daty);
+      const dateB = new Date(b.daty);
+
+      return dateB.getTime() - dateA.getTime();
+    });
+  };
+
   useEffect(() => {
 
     // @ts-ignore
@@ -44,7 +53,9 @@ const Historique: React.FC = () => {
           fetchedHistoriques.push(data);
         });
         console.log(fetchedHistoriques);
-        setHistoriques(fetchedHistoriques);
+        const order = sortHistoriqueByDate(fetchedHistoriques);
+        console.log(order);
+        setHistoriques(order);
       } catch (error) {
         console.error("Erreur lors de la récupération des historiques :", error);
       }

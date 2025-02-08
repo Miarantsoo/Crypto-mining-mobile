@@ -31,7 +31,7 @@ type Crypto = {
 
 type Favorie = {
     id: number,
-    idUser: number,
+    iduser: number,
     idCrypto: number,
     daty: Date;
 }
@@ -62,8 +62,8 @@ const Cours = () => {
                         ...doc.data(),
                     }as unknown as Favorie) );
                 // .filter((favori) => favori.idUser === idUser); // Filtrer directement
-
-                console.log("FonctionUserFav",userFavories)
+                setUserFavories(userFavorisresp);
+                console.log("FonctionUserFav",userFavorisresp)
                 setCheckFavorie(false);
                 setCheckData(true);
 
@@ -74,11 +74,13 @@ const Cours = () => {
 
 
     const checkOneFavorie = (idUser: number, idCrypto: number) => {
-        return userFavories.find((userFav) => userFav.idUser === idUser && userFav.idCrypto === idCrypto);
+        return userFavories.find((userFav) => userFav.iduser === idUser && userFav.idCrypto === (idCrypto+1));
     };
 
     const addFavorie = async (idCrypto: number) => {
         try {
+            allCryptos[selectedIndex].isFavories = true;
+            console.log(allCryptos[selectedIndex].isFavories);
             //@ts-ignore
             const utilisateur = JSON.parse(localStorage.getItem("utilisateur")) as IUtilisateur;
             if (!utilisateur?.id) {
@@ -86,8 +88,9 @@ const Cours = () => {
                 return;
             }
 
-            const idUtilisateur = utilisateur.id;
-            console.log(userFavories.length)
+            const iduser = utilisateur.id;
+            console.log("FonctionUserFavOnAddData",userFavories)
+
 
             let id = userFavories.length > 0 ? userFavories[userFavories.length-1].id + 1 : 1;
 
@@ -97,11 +100,12 @@ const Cours = () => {
 
             await setDoc(doc(firestore, "favoris", String(id)), {
                 id,
-                idUtilisateur,
+                iduser,
                 idCrypto,
                 daty: new Date(), // Date d'ajout du favori
             });
-            allCryptos[selectedIndex].isFavories = true;
+
+            setCheckFavorie(true);
             console.log("Favori ajouté avec succès !");
             return "Succès";
         } catch (err) {
@@ -112,6 +116,8 @@ const Cours = () => {
 
     const deleteFavorie = async (idCrypto: number) => {
         try {
+            allCryptos[selectedIndex].isFavories = false;
+            console.log(allCryptos[selectedIndex].isFavories);
             //@ts-ignore
             const utilisateur = JSON.parse(localStorage.getItem("utilisateur")) as IUtilisateur;
             if (!utilisateur?.id) {
@@ -131,8 +137,6 @@ const Cours = () => {
             // Suppression du favori dans Firestore
             await deleteDoc(doc(firestore, "favoris", String(favori.id)));
 
-            // Mettre à jour l'état local
-            allCryptos[selectedIndex].isFavories = false;
             console.log("Favori supprimé avec succès !");
             return "Succès";
         } catch (err) {
@@ -157,7 +161,7 @@ const Cours = () => {
     }, []);
 
 
-    useEffect(() => {fetchData();},[checkFavorie])
+    useEffect(() => {fetchData();},[checkData])
         //@ts-ignore
     const utilisateur = JSON.parse(localStorage.getItem("utilisateur")) as IUtilisateur;
     if (utilisateur?.id == null) {
@@ -179,21 +183,22 @@ const Cours = () => {
             })) as Crypto[];
 
             // Afficher les favoris pour débogage
-            console.log("userFavories", newData);
+            console.log("Database", newData);
 
             // Parcourir les cryptos et vérifier si elles sont dans les favoris de l'utilisateur
             const updatedData = newData.map((crypto) => {
-                // console.log("crypto.id", crypto.id, "utilisateur.id", utilisateur.id);
+                console.log(`Crypto ID: ${crypto.id + 1}`);
+                console.log(`User Favorites:`, userFavories.map(f => `idCrypto: ${f.idCrypto}, idUser: ${f.iduser}`).join(" | "));
+
                 const isFavori = userFavories.some(
-                    (favori) => Number(favori.idUser) === Number(utilisateur.id) && Number(favori.idCrypto) === Number(crypto.id) + 1
+                    (favori) => {
+                        console.log(`Comparing: idUser ${favori.iduser} === ${utilisateur.id}, idCrypto ${favori.idCrypto} === ${crypto.id + 1}`);
+                        return Number(favori.iduser) === Number(utilisateur.id) && Number(favori.idCrypto) === (Number(crypto.id) + 1);
+                    }
                 );
 
-                // console.log("isFavori for crypto", crypto.id, isFavori);
-
-                return {
-                    ...crypto,
-                    isFavories: isFavori, // Mettre à jour isFavories en fonction de la condition
-                };
+                console.log(`isFavori for crypto ${crypto.id}:`, isFavori);
+                return { ...crypto, isFavories: isFavori };
             });
 
             console.log("updatedData", updatedData);

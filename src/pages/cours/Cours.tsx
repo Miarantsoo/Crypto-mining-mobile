@@ -10,6 +10,7 @@ import Loading from "../../components/loading/Loading";
 import { limitToLast, onValue, orderByKey, query, ref } from "firebase/database";
 import {HiStar} from "react-icons/hi";
 import {IUtilisateur} from "../Home";
+import PushNotificationService from "../../services/PushNotificationService";
 
 type HistoCrypto = {
     id: number;
@@ -106,6 +107,7 @@ const Cours = () => {
             });
 
             setCheckFavorie(true);
+            PushNotificationService.subscribeTo(`crypto-${idCrypto}`);
             console.log("Favori ajouté avec succès !");
             return "Succès";
         } catch (err) {
@@ -136,7 +138,7 @@ const Cours = () => {
 
             // Suppression du favori dans Firestore
             await deleteDoc(doc(firestore, "favoris", String(favori.id)));
-
+            PushNotificationService.unSubscribeFrom(`crypto-${idCrypto}`);
             console.log("Favori supprimé avec succès !");
             return "Succès";
         } catch (err) {

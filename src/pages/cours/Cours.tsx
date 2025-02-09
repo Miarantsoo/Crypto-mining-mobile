@@ -4,10 +4,9 @@ import { LineChart } from "@mui/x-charts";
 import { IonPage, IonContent } from "@ionic/react";
 import { HiMiniChevronLeft } from "react-icons/hi2";
 import { useNavigate } from "react-router";
-import { collection, doc, getDocs, setDoc, deleteDoc, getDoc } from "firebase/firestore";
-import { db, firestore } from "../../firebase";
+import { collection, doc, getDocs, setDoc, deleteDoc, getDoc, orderBy, limit, onSnapshot, Query, query } from "firebase/firestore";
+import { firestore } from "../../firebase";
 import Loading from "../../components/loading/Loading";
-import { limitToLast, onValue, orderByKey, query, ref } from "firebase/database";
 import { HiStar } from "react-icons/hi";
 import { IUtilisateur } from "../Home";
 import PushNotificationService from "../../services/PushNotificationService";
@@ -238,23 +237,35 @@ const Cours = () => {
     };
 
     useEffect(() => {
-        const histoRef = query(ref(db, "histo-crypto"), orderByKey(), limitToLast(150));
-
-        const unsubscribe = onValue(histoRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-
-                const formattedData: HistoCrypto[] = Object.values(data)
-                    .filter((entry: any) => {
-                        return entry.idCrypto.id - 1 === selectedIndex;
-                    })
-                    .sort((a: any, b: any) => b.daty.epochSecond - a.daty.epochSecond)
-                    .slice(0, 10) as HistoCrypto[];
-
-                setCryptoHistory(formattedData);
-            } else {
-                setCryptoHistory([]);
-            }
+        const cryptoHistoryRef = collection(firestore, "histo-crypto");
+        const cryptoQuery = query(
+          cryptoHistoryRef as Query,
+          orderBy("daty", "desc"),
+          limit(150)
+        );
+        
+        const unsubscribe = onSnapshot(cryptoQuery, (snapshot) => {
+          if (!snapshot.empty) {
+            const formattedData = snapshot.docs
+              .map(doc => {
+                const data = doc.data();
+                return {
+                  ...data,
+                  id: doc.id
+                };
+              })
+              .filter((entry) => {
+                console.log(entry);
+                
+                return entry.idCrypto?.id - 1 === selectedIndex;
+              })
+              .sort((a, b) => b.daty.epochSecond - a.daty.epochSecond)
+              .slice(0, 10);
+        
+            setCryptoHistory(formattedData as unknown as HistoCrypto[]);
+          } else {
+            setCryptoHistory([]);
+          }
         });
 
         return () => unsubscribe();
@@ -285,7 +296,7 @@ const Cours = () => {
                         <span className="text-white font-body text-lg">{allCryptos[selectedIndex]?.nom}</span>
                         <div className="flex items-center gap-2">
                             <span
-                                className="text-white font-body text-lg">{formatCurrency(cryptoHistory.at(-1)?.valeur || 0)}</span>
+                                className="text-white font-body text-lg">{formatCurrency(cryptoHistory[0]?.valeur || 0)}</span>
                             <HiStar
                                 className={`text-2xl cursor-pointer ${allCryptos[selectedIndex]?.isFavories ? "text-yellow-500" : "text-gray-400"}`}
                                 onClick={() =>

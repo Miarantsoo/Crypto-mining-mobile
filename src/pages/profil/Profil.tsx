@@ -1,5 +1,5 @@
 import { IonButton, IonContent, IonPage } from "@ionic/react";
-import { Cloudinary } from '@cloudinary/url-gen';
+import { Cloudinary, CloudinaryImage } from '@cloudinary/url-gen';
 import { auto } from '@cloudinary/url-gen/actions/resize';
 import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
 import { AdvancedImage } from '@cloudinary/react';
@@ -21,36 +21,53 @@ const Profil = () => {
     const [profil, setProfil] = useState<any>();
     const [imageName, setImageName] = useState<string>('');
     const [dateNaissance, setDateNaissance] = useState<string>('');
-    const [noChange, setNoChange] = useState<boolean>(true)
-    const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+    const [noChange, setNoChange] = useState<boolean>(true);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [pfp, setPfp] = useState<CloudinaryImage>();
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            const user = localStorage.getItem("utilisateur")
-            if (user) {
-                const utilisateurDoc = doc(firestore, "utilisateur", user);
-                const docSnap = await getDoc(utilisateurDoc)
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
+    const fetchUser = async () => {
+        const user = localStorage.getItem("utilisateur")
+        if (user) {
+            const utilisateurDoc = doc(firestore, "utilisateur", user);
+            const docSnap = await getDoc(utilisateurDoc)
+            if (docSnap.exists()) {
+                const data = docSnap.data();
 
-                    setUser({
-                        id: Number(user),
-                        nom: data.nom,
-                        prenom: data.prenom,
-                        genre: data.genre,
-                        mail: data.mail,
-                        motDePasse: data.motDePasse,
-                        dateNaissance: data.dateNaissance.toDate(),
-                        photoProfile: data.photoProfile,
-                    });
-                }
+                setUser({
+                    id: Number(user),
+                    nom: data.nom,
+                    prenom: data.prenom,
+                    genre: data.genre,
+                    mail: data.mail,
+                    motDePasse: data.motDePasse,
+                    dateNaissance: data.dateNaissance.toDate(),
+                    photoProfile: data.photoProfile,
+                });
             }
         }
+    }
+    
+    useEffect(() => {
 
         fetchUser();
 
-
     }, [])
+
+    const displayPfp = (photo: string) => {
+        const cld = new Cloudinary({ cloud: { cloudName: 'djaekualm' } });
+
+        const img = cld
+            .image(photo)
+            .format('auto')
+            .quality('auto')
+            .resize(auto().gravity(autoGravity()).width(500).height(700));
+
+        setPfp(img);
+    }
+
+    useEffect(() => {
+        displayPfp(user?.photoProfile);
+    }, [user?.photoProfile]);
 
     useEffect(() => {
         if (user?.dateNaissance) {
@@ -102,7 +119,7 @@ const Profil = () => {
                     photoProfile: imageName
                 })
                 user.photoProfile = imageName;
-                localStorage.setItem('utilisateur', JSON.stringify(user));
+
                 setNoChange(!noChange)
                 setIsSubmitting(false)
             } else {
@@ -115,13 +132,7 @@ const Profil = () => {
     }
 
 
-    const cld = new Cloudinary({ cloud: { cloudName: 'djaekualm' } });
-
-    const img = cld
-        .image(user?.photoProfile)
-        .format('auto')
-        .quality('auto')
-        .resize(auto().gravity(autoGravity()).width(500).height(700));
+    
 
     return (
         <IonPage>
@@ -132,7 +143,7 @@ const Profil = () => {
                 </div>
                 <div className="h-2/3 rounded-b-[55px] object-contain overflow-hidden">
                     {noChange ? (
-                        <AdvancedImage cldImg={img} />
+                        <AdvancedImage cldImg={pfp} />
                     ) : (
                         <img className="w-full h-full object-cover" src={profil} alt="profil pic" />
                     )}

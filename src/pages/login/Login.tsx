@@ -64,7 +64,7 @@ const Login = () => {
 			// @ts-ignore
 			if (utilisateur?.motDePasse === SHA256(data.mdp).toString()) {
 				console.log(utilisateur);
-				await localStorage.setItem('utilisateur', JSON.stringify(utilisateur));
+				await localStorage.setItem('utilisateur', utilisateur.id);
 				PushNotificationService.subscribeTo(`demandes-user-${utilisateur.id}`);
 				navigate("/cours")
 			} else {

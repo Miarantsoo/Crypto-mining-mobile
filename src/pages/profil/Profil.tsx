@@ -10,7 +10,7 @@ import { HiMiniChevronLeft } from "react-icons/hi2";
 import { TbPhotoEdit } from "react-icons/tb";
 import { useNavigate } from "react-router";
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { firestore } from '../../firebase';
 import Loading from "../../components/loading/Loading";
 
@@ -25,17 +25,45 @@ const Profil = () => {
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
     useEffect(() => {
-        const userLS = JSON.parse(localStorage.getItem("utilisateur") || '{}');
-        setUser(userLS);
-        const date = new Date(userLS.dateNaissance.seconds * 1000);
+        const fetchUser = async () => {
+            const user = localStorage.getItem("utilisateur")
+            if (user) {
+                const utilisateurDoc = doc(firestore, "utilisateur", user);
+                const docSnap = await getDoc(utilisateurDoc)
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
 
-        const formattedDate = date.toLocaleDateString('fr-FR', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        });
-        setDateNaissance(formattedDate)
+                    setUser({
+                        id: Number(user),
+                        nom: data.nom,
+                        prenom: data.prenom,
+                        genre: data.genre,
+                        mail: data.mail,
+                        motDePasse: data.motDePasse,
+                        dateNaissance: data.dateNaissance.toDate(),
+                        photoProfile: data.photoProfile,
+                    });
+                }
+            }
+        }
+
+        fetchUser();
+
+
     }, [])
+
+    useEffect(() => {
+        if (user?.dateNaissance) {
+            
+          const formattedDateTime = user.dateNaissance.toLocaleString('fr-FR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          });
+          setDateNaissance(formattedDateTime);
+        }
+      }, [user]);
+      
 
     const takePicture = async () => {
         const image = await Camera.getPhoto({

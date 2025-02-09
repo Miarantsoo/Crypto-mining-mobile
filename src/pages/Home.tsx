@@ -15,7 +15,7 @@ export interface IUtilisateur {
   genre: number;
   mail: string;
   motDePasse: string;
-  dateNaissance: string;
+  dateNaissance: Date;
   photoProfile: string;
 }
 

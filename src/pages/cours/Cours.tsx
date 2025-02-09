@@ -4,13 +4,14 @@ import { LineChart } from "@mui/x-charts";
 import { IonPage, IonContent } from "@ionic/react";
 import { HiMiniChevronLeft } from "react-icons/hi2";
 import { useNavigate } from "react-router";
-import {collection, doc, getDocs, setDoc, deleteDoc} from "firebase/firestore";
+import { collection, doc, getDocs, setDoc, deleteDoc, getDoc } from "firebase/firestore";
 import { db, firestore } from "../../firebase";
 import Loading from "../../components/loading/Loading";
 import { limitToLast, onValue, orderByKey, query, ref } from "firebase/database";
-import {HiStar} from "react-icons/hi";
-import {IUtilisateur} from "../Home";
+import { HiStar } from "react-icons/hi";
+import { IUtilisateur } from "../Home";
 import PushNotificationService from "../../services/PushNotificationService";
+
 
 type HistoCrypto = {
     id: number;
@@ -47,35 +48,38 @@ const Cours = () => {
     const [cryptoHistory, setCryptoHistory] = useState<HistoCrypto[]>([]);
     const [checkFavorie, setCheckFavorie] = useState(false);
     const [checkData, setCheckData] = useState(false);
+    const [utilisateur, setUtilisateur] = useState<IUtilisateur>();
 
 
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(value);
     };
-    useEffect(() => {fetchUserFavories();},[checkFavorie])
-        const fetchUserFavories = async () => {
-            try{
-                const querySnapshot = await getDocs(collection(firestore, "favoris"));
 
-                const userFavorisresp = querySnapshot.docs
-                    .map((doc) => ({
-                        id: Number(doc.id) - 1,
-                        ...doc.data(),
-                    }as unknown as Favorie) );
-                // .filter((favori) => favori.idUser === idUser); // Filtrer directement
-                setUserFavories(userFavorisresp);
-                console.log("FonctionUserFav",userFavorisresp)
-                setCheckFavorie(false);
-                setCheckData(true);
+    useEffect(() => { fetchUserFavories(); }, [checkFavorie])
 
-            }catch (error) {
-                console.log(error)
-            }
-        };
+    const fetchUserFavories = async () => {
+        try {
+            const querySnapshot = await getDocs(collection(firestore, "favoris"));
+
+            const userFavorisresp = querySnapshot.docs
+                .map((doc) => ({
+                    id: Number(doc.id) - 1,
+                    ...doc.data(),
+                } as unknown as Favorie));
+            // .filter((favori) => favori.idUser === idUser); // Filtrer directement
+            setUserFavories(userFavorisresp);
+            console.log("FonctionUserFav", userFavorisresp)
+            setCheckFavorie(false);
+            setCheckData(true);
+
+        } catch (error) {
+            console.log(error)
+        }
+    };
 
 
     const checkOneFavorie = (idUser: number, idCrypto: number) => {
-        return userFavories.find((userFav) => userFav.iduser === idUser && userFav.idCrypto === (idCrypto+1));
+        return userFavories.find((userFav) => userFav.iduser === idUser && userFav.idCrypto === (idCrypto + 1));
     };
 
     const addFavorie = async (idCrypto: number) => {
@@ -83,18 +87,17 @@ const Cours = () => {
             setLoad(true)
             allCryptos[selectedIndex].isFavories = true;
             console.log(allCryptos[selectedIndex].isFavories);
-            //@ts-ignore
-            const utilisateur = JSON.parse(localStorage.getItem("utilisateur")) as IUtilisateur;
+        
             if (!utilisateur?.id) {
                 alert("Utilisateur manquant");
                 return;
             }
 
             const iduser = utilisateur.id;
-            console.log("FonctionUserFavOnAddData",userFavories)
+            console.log("FonctionUserFavOnAddData", userFavories)
 
 
-            let id = userFavories.length > 0 ? userFavories[userFavories.length-1].id + 1 : 1;
+            let id = userFavories.length > 0 ? userFavories[userFavories.length - 1].id + 1 : 1;
 
             console.log("parametreeeeee", utilisateur.id, idCrypto);
 
@@ -104,7 +107,7 @@ const Cours = () => {
                 id,
                 iduser,
                 idCrypto,
-                daty: new Date(), // Date d'ajout du favori
+                daty: new Date(),
             });
 
             setCheckFavorie(true);
@@ -123,8 +126,7 @@ const Cours = () => {
             setLoad(true);
             allCryptos[selectedIndex].isFavories = false;
             console.log(allCryptos[selectedIndex].isFavories);
-            //@ts-ignore
-            const utilisateur = JSON.parse(localStorage.getItem("utilisateur")) as IUtilisateur;
+        
             if (!utilisateur?.id) {
                 alert("Utilisateur manquant");
                 return;
@@ -163,16 +165,35 @@ const Cours = () => {
             }
         });
         observer.observe(containerRef.current);
+
+        const fetchUser = async () => {
+            const user = localStorage.getItem("utilisateur")
+            if (user) {
+                const utilisateurDoc = doc(firestore, "utilisateur", user);
+                const docSnap = await getDoc(utilisateurDoc)
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+    
+                    setUtilisateur({
+                        id: Number(user), 
+                        nom: data.nom,
+                        prenom: data.prenom,
+                        genre: data.genre,
+                        mail: data.mail,
+                        motDePasse: data.motDePasse,
+                        dateNaissance: data.dateNaissance,
+                        photoProfile: data.photoProfile,
+                    });
+                }
+            }
+        }
+
+        fetchUser();
         return () => observer.disconnect();
     }, []);
 
 
-    useEffect(() => {fetchData();},[checkData])
-        //@ts-ignore
-    const utilisateur = JSON.parse(localStorage.getItem("utilisateur")) as IUtilisateur;
-    if (utilisateur?.id == null) {
-        alert("utilisateur manquant");
-    }
+    useEffect(() => { fetchData(); }, [checkData])
 
 
     const fetchData = async () => {
@@ -198,8 +219,8 @@ const Cours = () => {
 
                 const isFavori = userFavories.some(
                     (favori) => {
-                        console.log(`Comparing: idUser ${favori.iduser} === ${utilisateur.id}, idCrypto ${favori.idCrypto} === ${crypto.id + 1}`);
-                        return Number(favori.iduser) === Number(utilisateur.id) && Number(favori.idCrypto) === (Number(crypto.id) + 1);
+                        console.log(`Comparing: idUser ${favori.iduser} === ${utilisateur?.id}, idCrypto ${favori.idCrypto} === ${crypto.id + 1}`);
+                        return Number(favori.iduser) === Number(utilisateur?.id) && Number(favori.idCrypto) === (Number(crypto.id) + 1);
                     }
                 );
 
@@ -225,7 +246,7 @@ const Cours = () => {
 
                 const formattedData: HistoCrypto[] = Object.values(data)
                     .filter((entry: any) => {
-                        return entry.idCrypto.id-1 === selectedIndex;
+                        return entry.idCrypto.id - 1 === selectedIndex;
                     })
                     .sort((a: any, b: any) => b.daty.epochSecond - a.daty.epochSecond)
                     .slice(0, 10) as HistoCrypto[];
@@ -301,8 +322,8 @@ const Cours = () => {
                                 },
                             ]}
                             colors={["#1C32C4"]}
-                            margin={{left: 30, right: 10, top: 30, bottom: 30}}
-                            grid={{vertical: false, horizontal: true}}
+                            margin={{ left: 30, right: 10, top: 30, bottom: 30 }}
+                            grid={{ vertical: false, horizontal: true }}
                         />
                     </div>
 
@@ -313,17 +334,17 @@ const Cours = () => {
                                 return (
                                     <motion.div
                                         key={crypto.id}
-                                        initial={{opacity: 0, x: 50}}
+                                        initial={{ opacity: 0, x: 50 }}
                                         animate={{
                                             opacity:
                                                 Math.abs(position) === 1 ? 0.5 : position === 0 ? 1 : 0,
                                             x: position * 90,
                                             scale: position === 0 ? 1.2 : 1,
                                         }}
-                                        exit={{opacity: 0, x: -50}}
-                                        transition={{type: "spring", stiffness: 120}}
+                                        exit={{ opacity: 0, x: -50 }}
+                                        transition={{ type: "spring", stiffness: 120 }}
                                         className={`absolute text-sm font-bold cursor-pointer font-title uppercase ${position === 0 ? "text-main" : "text-slate-500"
-                                        }`}
+                                            }`}
                                         onClick={() => setSelectedIndex(index)}
                                     >
                                         {crypto.nom}
@@ -334,7 +355,7 @@ const Cours = () => {
                     </div>
                 </div>
                 {load &&
-                    <Loading/>
+                    <Loading />
                 }
             </IonContent>
         </IonPage>

@@ -2,18 +2,41 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FaBars, FaChartLine, FaMoneyBill, FaMoneyBillTransfer, FaWallet } from "react-icons/fa6";
 import NavbarButton from "./NavbarButton";
 import { useState, useEffect, useRef } from "react";
+import { firestore } from "../../firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 const FootBar = () => {
   const [userLS, setUserLS] = useState<any>();
   const [showNavbar, setShowNavbar] = useState(true);
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
-  
+
   // Use a ref to hold the inactivity timer
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const usr = JSON.parse(localStorage.getItem("utilisateur") || "{}");
-    setUserLS(usr);
+    const fetchUser = async () => {
+      const user = localStorage.getItem("utilisateur")
+      if (user) {
+        const utilisateurDoc = doc(firestore, "utilisateur", user);
+        const docSnap = await getDoc(utilisateurDoc)
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+
+          setUserLS({
+            id: Number(user),
+            nom: data.nom,
+            prenom: data.prenom,
+            genre: data.genre,
+            mail: data.mail,
+            motDePasse: data.motDePasse,
+            dateNaissance: data.dateNaissance,
+            photoProfile: data.photoProfile,
+          });
+        }
+      }
+    }
+
+    fetchUser();
   }, []);
 
   // Clear any existing timer

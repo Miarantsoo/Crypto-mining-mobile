@@ -340,28 +340,30 @@ const Cours = () => {
 
                     <div className="mt-1 flex items-center justify-center relative w-full h-10">
                         <AnimatePresence>
-                            {allCryptos.map((crypto, index) => {
-                                const position = index - selectedIndex;
-                                return (
-                                    <motion.div
-                                        key={crypto.id}
-                                        initial={{ opacity: 0, x: 50 }}
-                                        animate={{
-                                            opacity:
-                                                Math.abs(position) === 1 ? 0.5 : position === 0 ? 1 : 0,
-                                            x: position * 90,
-                                            scale: position === 0 ? 1.2 : 1,
-                                        }}
-                                        exit={{ opacity: 0, x: -50 }}
-                                        transition={{ type: "spring", stiffness: 120 }}
-                                        className={`absolute text-sm font-bold cursor-pointer font-title uppercase ${position === 0 ? "text-main" : "text-slate-500"
-                                            }`}
-                                        onClick={() => setSelectedIndex(index)}
-                                    >
-                                        {crypto.nom}
-                                    </motion.div>
-                                );
-                            })}
+                            {allCryptos
+                                .sort((a, b) => a.id - b.id)
+                                .map((crypto, index) => {
+                                    const position = index - selectedIndex;
+                                    return (
+                                        <motion.div
+                                            key={crypto.id}
+                                            initial={{ opacity: 0, x: 50 }}
+                                            animate={{
+                                                opacity:
+                                                    Math.abs(position) === 1 ? 0.5 : position === 0 ? 1 : 0,
+                                                x: position * 90,
+                                                scale: position === 0 ? 1.2 : 1,
+                                            }}
+                                            exit={{ opacity: 0, x: -50 }}
+                                            transition={{ type: "spring", stiffness: 120 }}
+                                            className={`absolute text-sm font-bold cursor-pointer font-title uppercase ${position === 0 ? "text-main" : "text-slate-500"
+                                                }`}
+                                            onClick={() => setSelectedIndex(index)}
+                                        >
+                                            {crypto.nom}
+                                        </motion.div>
+                                    );
+                                })}
                         </AnimatePresence>
                     </div>
                 </div>

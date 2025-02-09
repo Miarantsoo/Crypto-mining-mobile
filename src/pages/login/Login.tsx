@@ -25,6 +25,16 @@ type FormFields = {
 
 
 const Login = () => {
+
+	useEffect(() => {
+		const user = localStorage.getItem('utilisateur');
+		if(user) {
+			PushNotificationService.unSubscribeFrom(`demandes-user-${user}`);
+			localStorage.removeItem('utilisateur');
+		}
+
+	}, []);
+
 	const {
 		register,
 		handleSubmit,

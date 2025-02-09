@@ -30,7 +30,8 @@ const App: React.FC = () => {
     const returnListener = () => {
       document.addEventListener("ionBackButton", async (event) => {
         if (window.history.state && window.history.state.idx > 0) {
-          navigate(-1); // Go back
+          const previousPath = document.referrer; // Check previous URL
+          navigate(-1); // Go back  
         } else {
           const alert = await alertController.create({
             header: "Exit App",

@@ -80,6 +80,7 @@ const Cours = () => {
 
     const addFavorie = async (idCrypto: number) => {
         try {
+            setLoad(true)
             allCryptos[selectedIndex].isFavories = true;
             console.log(allCryptos[selectedIndex].isFavories);
             //@ts-ignore
@@ -109,6 +110,7 @@ const Cours = () => {
             setCheckFavorie(true);
             PushNotificationService.subscribeTo(`crypto-${idCrypto}`);
             console.log("Favori ajouté avec succès !");
+            setLoad(false);
             return "Succès";
         } catch (err) {
             console.error("Erreur lors de l'ajout du favori :", err);
@@ -118,6 +120,7 @@ const Cours = () => {
 
     const deleteFavorie = async (idCrypto: number) => {
         try {
+            setLoad(true);
             allCryptos[selectedIndex].isFavories = false;
             console.log(allCryptos[selectedIndex].isFavories);
             //@ts-ignore
@@ -140,6 +143,7 @@ const Cours = () => {
             await deleteDoc(doc(firestore, "favoris", String(favori.id)));
             PushNotificationService.unSubscribeFrom(`crypto-${idCrypto}`);
             console.log("Favori supprimé avec succès !");
+            setLoad(false);
             return "Succès";
         } catch (err) {
             console.error("Erreur lors de la suppression du favori :", err);

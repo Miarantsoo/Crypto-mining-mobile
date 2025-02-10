@@ -46,7 +46,7 @@ const PushNotificationService = {
               attachments: null,
               actionTypeId: "",
               extra: null,
-              smallIcon: "ic_ikon",
+              smallIcon: "base_small",
             },
           ],
         });
